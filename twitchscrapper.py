@@ -14,15 +14,17 @@ from selenium import webdriver
 
 
 def selenium_get_html(url, chrome_driver, language=None):
-    """ Return the html source from the url using Selenium and the Chrome web
-    driver. If language is specified (es, en, fr, etc) it will click on the
-    language menu and change it (works only on directory pages). """
+    """
+        Return the html source from the url using Selenium and the Chrome web
+        driver. If language is specified (es, en, fr, etc) it will click on the
+        language menu and change it (works only on directory pages).
+    """
 
     driver = webdriver.Chrome(chrome_driver)
     driver.get(url)
 
-    # Change the menu language by 'clicking'
-    if language:
+    if language:  # Change the language by 'clicking' on the menu
+
         driver.find_element_by_xpath(
             "//div[contains(@class, 'language-select-menu')]").click()
         time.sleep(1)
@@ -38,9 +40,29 @@ def selenium_get_html(url, chrome_driver, language=None):
     return html
 
 
+def get_href_handler(htmlsource, href):
+    """
+        Return the last part of the first url found with the href parameter in
+        any url link of the html.
+
+        'lolirotve' from the url https://twitter.com/lolirotve when href is
+        'twitter.com/'
+    """
+
+    soup = BeautifulSoup(htmlsource, "html.parser")
+
+    for a in soup.find_all("a", href=True):
+        if href in a["href"]:
+            return a["href"].replace("/", " ").strip().split(" ")[-1]
+
+    return False
+
+
 def get_directory_data(htmlsource):
-    """ Return a dictionary with the data for each stream in a Twitch game
-    directory page, like https://www.twitch.tv/directory/game/Overwatch """
+    """
+        Return a dictionary with the data for each stream in a Twitch game
+        directory page, like https://www.twitch.tv/directory/game/Overwatch
+    """
 
     soup = BeautifulSoup(htmlsource, "html.parser")
 
@@ -48,17 +70,17 @@ def get_directory_data(htmlsource):
     for html in soup.find_all("div", "stream-thumbnail"):
 
         image = html.find("img", src=True)
-        image = image["src"] if image else None
+        image = image["src"] if image else False
 
         title = html.find("h3", class_="live-channel-card__title", title=True)
-        title = title["title"] if title else None
+        title = title["title"] if title else False
 
         viewers = html.find("span", class_="tw-ellipsis")
-        viewers = viewers.text.split(" ")[0] if viewers else None
+        viewers = viewers.text.split(" ")[0] if viewers else False
 
         user = html.find("a", class_="live-channel-card__videos", href=True)
         user = user["href"].replace(
-            "/", " ").strip().split(" ")[0] if user else None
+            "/", " ").strip().split(" ")[0] if user else False
 
         data[user] = {
             "image": image,
@@ -71,18 +93,23 @@ def get_directory_data(htmlsource):
 
 
 def get_user_data(htmlsource):
-    """ Return a dictionary with the user data on a Twitch.tv streamer page html
-    source, like https://www.twitch.tv/chipshajen """
+    """
+        Return a dictionary with the user data on a Twitch.tv streamer page html
+        source, like https://www.twitch.tv/chipshajen
+    """
 
     soup = BeautifulSoup(htmlsource, "html.parser")
 
     data = {}
 
+    user = soup.find("a", class_="channel-header__user").find("h5")
+    user = user.text if user else False
+
     status = soup.find("span", {
         "data-a-target": "stream-title",
         "title": True
     })
-    status = status["title"] if status else None
+    status = status["title"] if status else False
 
     viewers = soup.find("div", {
         "class": "tw-stat",
@@ -90,7 +117,8 @@ def get_user_data(htmlsource):
     }).find("span", {
         "data-a-target": "tw-stat-value"
     })
-    viewers = viewers.text if viewers else None
+    viewers = viewers.text if viewers else False
+    viewers = "".join([c for c in viewers if c.isdigit()])
 
     total_views = soup.find("div", {
         "class": "tw-stat",
@@ -98,18 +126,25 @@ def get_user_data(htmlsource):
     }).find("span", {
         "data-a-target": "tw-stat-value"
     })
-    total_views = total_views.text if total_views else None
+    total_views = total_views.text if total_views else False
+    total_views = "".join([c for c in total_views if c.isdigit()])
 
-    data["userx"] = {
+    twitter = get_href_handler(htmlsource, "twitter.com/")
+    instagram = get_href_handler(htmlsource, "instagram.com/")
+    youtube = get_href_handler(htmlsource, "youtube.com/user/")
+
+    data[user] = {
         "status": status,
-        "twitter": "",
-        "instagram": "",
-        "viewers": viewers,
-        "total_views": total_views,
+        "twitter": twitter,
+        "instagram": instagram,
+        "youtube": youtube,
+        "viewers": int(viewers),
+        "total_views": int(total_views),
         "followers": "",
         "following": "",
         "videos_count": "",
         "tags": "",
+        "time": time.time()
     }
 
     return data
@@ -157,7 +192,7 @@ if __name__ == "__main__":
     #         language="en"))
 
     USERX = get_user_data(
-        selenium_get_html("https://www.twitch.tv/dafran", CHROME))
+        selenium_get_html("https://www.twitch.tv/gale_adelade", CHROME))
 
     # Scrap results
 
