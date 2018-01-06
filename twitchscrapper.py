@@ -1,6 +1,6 @@
 """
-    Twitch.com data scrapper
-    :D
+    Twitch.tv Overwatch data scrapper
+    2018/01/06 12:02 am
 """
 
 import json
@@ -13,25 +13,35 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 
 
-def selenium_get_html(url, chrome_driver, language=None):
+def get_twitch_html(url, chrome_driver, language=None, closechat=None):
     """
-        Return the html source from the url using Selenium and the Chrome web
-        driver. If language is specified (es, en, fr, etc) it will click on the
-        language menu and change it (works only on directory pages).
+        Return the html source from the Twitch.tv url using Selenium and the
+        Chrome web driver.
+
+        If language is specified (es, en, fr, etc) it will click on the language
+        menu and change it (works only on directory pages).
+
+        If close chat, it will click the close chat toggle.
     """
 
     driver = webdriver.Chrome(chrome_driver)
+    driver.maximize_window()
     driver.get(url)
 
-    if language:  # Change the language by 'clicking' on the menu
+    # Change the language by 'clicking' on the menu
+    if language:
 
-        driver.find_element_by_xpath(
-            "//div[contains(@class, 'language-select-menu')]").click()
+        langmenu = "//div[contains(@class, 'language-select-menu')]"
+        driver.find_element_by_xpath(language).click()
         time.sleep(1)
 
-        driver.find_element_by_xpath(
-            f"//div[@class='tw-checkbox' and @data-language-code='{language}']"
-        ).click()
+        langcheck = f"//div[@class='tw-checkbox' and @data-language-code='{language}']"
+        driver.find_element_by_xpath(langcheck).click()
+        time.sleep(1)
+
+    if closechat:
+        togglecol = "//button[contains(@data-a-target, 'right-column__toggle-collapse-btn')]"
+        driver.find_element_by_xpath(togglecol).click()
         time.sleep(1)
 
     html = driver.page_source
@@ -131,18 +141,46 @@ def get_user_data(htmlsource):
 
     twitter = get_href_handler(htmlsource, "twitter.com/")
     instagram = get_href_handler(htmlsource, "instagram.com/")
-    youtube = get_href_handler(htmlsource, "youtube.com/user/")
+    youtubeuser = get_href_handler(htmlsource, "youtube.com/user/")
+    youtubechannel = get_href_handler(htmlsource, "youtube.com/channel/")
+    discord = get_href_handler(htmlsource, "discord.gg/")
+
+    followers = soup.find("a", {
+        "data-a-target": "followers-channel-header-item"
+    }).find("div", {
+        "class": "channel-header__item-count"
+    }).find("span")
+    followers = followers.text if followers else False
+    followers = "".join([c for c in followers if c.isdigit()])
+
+    following = soup.find("a", {
+        "data-a-target": "following-channel-header-item"
+    }).find("div", {
+        "class": "channel-header__item-count"
+    }).find("span")
+    following = following.text if following else False
+    following = "".join([c for c in following if c.isdigit()])
+
+    videos = soup.find("a", {
+        "data-a-target": "videos-channel-header-item"
+    }).find("div", {
+        "class": "channel-header__item-count"
+    }).find("span")
+    videos = videos.text if videos else False
+    videos = "".join([c for c in videos if c.isdigit()])
 
     data[user] = {
         "status": status,
         "twitter": twitter,
         "instagram": instagram,
-        "youtube": youtube,
+        "youtube_user": youtubeuser,
+        "youtube_channel": youtubechannel,
+        "discord": discord,
         "viewers": int(viewers),
         "total_views": int(total_views),
-        "followers": "",
-        "following": "",
-        "videos_count": "",
+        "followers": int(followers),
+        "following": int(following),
+        "videos_count": int(videos),
         "tags": "",
         "time": time.time()
     }
@@ -192,7 +230,7 @@ if __name__ == "__main__":
     #         language="en"))
 
     USERX = get_user_data(
-        selenium_get_html("https://www.twitch.tv/gale_adelade", CHROME))
+        get_twitch_html("https://www.twitch.tv/xqcow", CHROME, closechat=True))
 
     # Scrap results
 
