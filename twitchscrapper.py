@@ -32,7 +32,7 @@ def get_twitch_html(url, chrome_driver, language=None, closechat=None):
     if language:
 
         langmenu = "//div[contains(@class, 'language-select-menu')]"
-        driver.find_element_by_xpath(language).click()
+        driver.find_element_by_xpath(langmenu).click()
         time.sleep(1)
 
         langcheck = f"//div[@class='tw-checkbox' and @data-language-code='{language}']"
@@ -217,28 +217,29 @@ if __name__ == "__main__":
 
     # Data
 
-    # DATAES = get_directory_data(
-    #     selenium_get_html(
-    #         "https://www.twitch.tv/directory/game/Overwatch",
-    #         CHROME,
-    #         language="es"))
+    DATAES = get_directory_data(
+        get_twitch_html(
+            "https://www.twitch.tv/directory/game/Overwatch",
+            CHROME,
+            language="es"))
 
-    # DATAEN = get_directory_data(
-    #     selenium_get_html(
-    #         "https://www.twitch.tv/directory/game/Overwatch",
-    #         CHROME,
-    #         language="en"))
+    DATAEN = get_directory_data(
+        get_twitch_html(
+            "https://www.twitch.tv/directory/game/Overwatch",
+            CHROME,
+            language="en"))
 
     USERX = get_user_data(
-        get_twitch_html("https://www.twitch.tv/xqcow", CHROME, closechat=True))
+        get_twitch_html(
+            "https://www.twitch.tv/tytannia92", CHROME, closechat=True))
 
     # Scrap results
 
-    # with open("overwatch_es.json", "w") as f:
-    #     json.dump(DATAES, f)
+    with open("overwatch_es.json", "w") as f:
+        json.dump(DATAES, f)
 
-    # with open("overwatch_en.json", "w") as f:
-    #     json.dump(DATAEN, f)
+    with open("overwatch_en.json", "w") as f:
+        json.dump(DATAEN, f)
 
     with open("userx.json", "w") as f:
         json.dump(USERX, f)
