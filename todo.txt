@@ -2,4 +2,6 @@
         TO DO
 
 
+    Include facebook on user profile scrap
+    Include profile tags
     Offline profiles are different to online, detect
