@@ -1,6 +1,8 @@
 """
     Twitch.tv Overwatch data scrapper
-    2018/01/06 12:02 am
+
+    @matnesis
+    2018/01/04
 """
 
 import json
@@ -88,8 +90,8 @@ def get_href_handler(htmlsource, href):
 
 def get_directory_data(url, language="en"):
     """
-        Return a dictionary with the data for each stream in a Twitch game
-        directory page, like https://www.twitch.tv/directory/game/Overwatch
+        Return a dictionary with the data for each stream in a Twitch.tv game
+        directory page like https://www.twitch.tv/directory/game/Overwatch
     """
 
     htmlsource = get_twitch_html(url, language=language)
@@ -133,8 +135,8 @@ def get_directory_data(url, language="en"):
 
 def get_user_data(url):
     """
-        Return a dictionary with the user data on a Twitch.tv streamer page html
-        source, e.g https://www.twitch.tv/chipshajen
+        Return a dictionary with the user data on a Twitch.tv streamer page like
+        https://www.twitch.tv/chipshajen
     """
 
     htmlsource = get_twitch_html(url, closechat=True)
