@@ -1,5 +1,5 @@
 """
-    Twitch.tv Overwatch data scrapper
+    Twitch.tv + Overwatch data scrapper
 
     @matnesis
     2018/01/04
@@ -243,19 +243,19 @@ if __name__ == "__main__":
 
     DELTA = time.time()
 
-    with open(os.path.join(HOME, "overwatch_en.json"), "w") as f:
+    with open(os.path.join(HOME, "sample-directory-en.json"), "w") as f:
         json.dump(
             get_directory_data(
                 "https://www.twitch.tv/directory/game/Overwatch",
                 language="en"), f)
 
-    with open(os.path.join(HOME, "overwatch_es.json"), "w") as f:
+    with open(os.path.join(HOME, "sample-directory-es.json"), "w") as f:
         json.dump(
             get_directory_data(
                 "https://www.twitch.tv/directory/game/Overwatch",
                 language="es"), f)
 
-    with open(os.path.join(HOME, "userx.json"), "w") as f:
-        json.dump(get_user_data("https://www.twitch.tv/aimbotcalvin"), f)
+    with open(os.path.join(HOME, "sample-user.json"), "w") as f:
+        json.dump(get_user_data("https://www.twitch.tv/chipsaow"), f)
 
     print(f"\nDone! ({round(time.time() - DELTA)}s)")
