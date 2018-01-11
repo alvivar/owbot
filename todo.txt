@@ -3,5 +3,8 @@
 
 
     Include facebook on user profile scrap
-    Include profile tags
-    Offline profiles are different to online, detect
+    Include profile tags?
+
+
+    2018/01/10 05:23 pm
+    x Offline profiles are different to online, detect
