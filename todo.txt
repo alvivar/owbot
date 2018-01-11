@@ -2,6 +2,7 @@
         TO DO
 
 
+    Include all twitter accounts found
     Include facebook on user profile scrap
     Include profile tags?
 
