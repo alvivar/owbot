@@ -7,6 +7,7 @@
 
 import json
 import os
+import random
 import sys
 import time
 
@@ -14,6 +15,9 @@ from bs4 import BeautifulSoup
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.ui import WebDriverWait
 
 HOME = os.path.normpath(  # The script directory + cxfreeze compatibility
     os.path.dirname(
@@ -45,22 +49,25 @@ def get_twitch_html(url, language=None, closechat=False):
 
     driver.maximize_window()
     driver.get(url)
+    time.sleep(random.uniform(1, 3))
 
     try:
         if language:  # 'Click' the menu
             langmenu = "//div[contains(@class, 'language-select-menu')]"
             driver.find_element_by_xpath(langmenu).click()
-            time.sleep(1)
+            time.sleep(random.uniform(1, 3))
 
-            langcheck = f"//div[@class='tw-checkbox' and @data-language-code='{language}']"
-            driver.find_element_by_xpath(langcheck).click()
-            time.sleep(1)
+            langcheck = f"//div[contains(@class, 'tw-checkbox') and contains(@data-language-code, '{language}')]/label"
+            WebDriverWait(driver, 10).until(
+                ec.presence_of_element_located((By.XPATH, langcheck))).click()
+            time.sleep(random.uniform(1, 3))
 
         if closechat:  # Click the collapse chat button
             togglecol = "//button[contains(@data-a-target, 'right-column__toggle-collapse-btn')]"
             driver.find_element_by_xpath(togglecol).click()
-            time.sleep(1)
+            time.sleep(random.uniform(1, 3))
     except NoSuchElementException:
+        print(f"Clicking doesn't work on '{url}'")
         driver.quit()
         return False
 
@@ -256,6 +263,6 @@ if __name__ == "__main__":
                 language="es"), f)
 
     with open(os.path.join(HOME, "sample-user.json"), "w") as f:
-        json.dump(get_user_data("https://www.twitch.tv/aimbotcalvin"), f)
+        json.dump(get_user_data("https://www.twitch.tv/kephrii"), f)
 
     print(f"\nDone! ({round(time.time() - DELTA)}s)")
