@@ -78,17 +78,16 @@ if __name__ == "__main__":
 
     # Prepare a tweet for the top player
 
-    DIRECTORY = get_directory_data(
-        "https://www.twitch.tv/directory/game/Overwatch", language="en")
+    DIRURL = "https://www.twitch.tv/directory/game/Overwatch"
+    DIRECTORY = get_directory_data(DIRURL, language="en")
+    print(f"Scrapped '{DIRURL}'")
 
     if not DIRECTORY:
-        input(
-            "\nError scraping 'https://www.twitch.tv/directory/game/Overwatch'"
-        )
+        input(f"\nError scraping '{DIRURL}'")
         sys.exit(1)
 
     with open(
-            os.path.join(DATAPATH, f"directory{round(time.time())}.json"),
+            os.path.join(DATAPATH, f"directory({round(time.time())}).json"),
             "w") as f:
         json.dump(DIRECTORY, f)
 
@@ -114,9 +113,14 @@ if __name__ == "__main__":
 
         url = f"https://www.twitch.tv/{user}"
         userdata = get_user_data(url)
+        print(f"Scrapped '{url}'\n")
+
+        if not userdata:
+            input(f"\nError scraping '{url}'")
+            sys.exit(1)
 
         with open(
-                os.path.join(DATAPATH, f"{user}{round(time.time())}.json"),
+                os.path.join(DATAPATH, f"{user}({round(time.time())}).json"),
                 "w") as f:
             json.dump(userdata, f)
 
@@ -136,7 +140,6 @@ if __name__ == "__main__":
         # Queue tweet in Qbot
 
         tweet = {'text': f"{status}{twitter}{url}", 'image': imagefile}
-
         QBOT['messages'].append(tweet)
         with open(QBOTJSON, "w") as f:
             json.dump(QBOT, f)
@@ -146,9 +149,11 @@ if __name__ == "__main__":
 
         CONFIG['promoted'][user]['count'] += 1
         CONFIG['promoted'][user]['last_time'] += time.time()
-
         with open(CONFIGJSON, "w") as f:
             json.dump(CONFIG, f)
 
         # Just once
         break
+
+    # The end
+    input(f"\nDone! ({round(time.time() - DELTA)}s)")
