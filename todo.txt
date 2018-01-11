@@ -4,6 +4,7 @@
 
     Include all twitter accounts found
     Include facebook on user profile scrap
+    Improve youtube detection
     Include profile tags?
 
 
