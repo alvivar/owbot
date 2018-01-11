@@ -20,7 +20,7 @@ HOME = os.path.normpath(  # The script directory + cxfreeze compatibility
         sys.executable if getattr(sys, 'frozen', False) else __file__))
 
 CONFIG = {}
-CONFIGJSON = os.path.join(HOME, "config.json")
+CONFIGJSON = os.path.join(HOME, "config-twitchscrapper.json")
 try:
     CONFIG = json.load(open(CONFIGJSON, "r"))
 except (IOError, ValueError):
