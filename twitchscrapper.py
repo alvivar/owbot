@@ -107,9 +107,9 @@ def get_directory_data(url, language="en"):
             image = html.find("img", src=True)
             image = image["src"] if image else False
 
-            title = html.find(
+            status = html.find(
                 "h3", class_="live-channel-card__title", title=True)
-            title = title["title"] if title else False
+            status = status["title"] if status else False
 
             viewers = html.find("span", class_="tw-ellipsis")
             viewers = viewers.text.split(" ")[0] if viewers else False
@@ -121,7 +121,7 @@ def get_directory_data(url, language="en"):
 
             data[user] = {
                 "image": image,
-                "title": title,
+                "status": status,
                 "viewers": viewers,
                 "time": time.time()
             }
@@ -147,7 +147,7 @@ def get_user_data(url):
     data = {}
 
     user = soup.find("a", class_="channel-header__user").find("h5")
-    user = user.text if user else False
+    user = user.text.lower() if user else False
 
     status = soup.find("span", {
         "data-a-target": "stream-title",
@@ -256,6 +256,6 @@ if __name__ == "__main__":
                 language="es"), f)
 
     with open(os.path.join(HOME, "sample-user.json"), "w") as f:
-        json.dump(get_user_data("https://www.twitch.tv/chipsaow"), f)
+        json.dump(get_user_data("https://www.twitch.tv/aimbotcalvin"), f)
 
     print(f"\nDone! ({round(time.time() - DELTA)}s)")
