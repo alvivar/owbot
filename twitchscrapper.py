@@ -10,6 +10,7 @@ import os
 import random
 import sys
 import time
+from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 
@@ -49,23 +50,24 @@ def get_twitch_html(url, language=None, closechat=False):
 
     driver.maximize_window()
     driver.get(url)
-    time.sleep(random.uniform(1, 3))
+    time.sleep(random.uniform(1, 4))
 
     try:
         if language:  # 'Click' the menu
             langmenu = "//div[contains(@class, 'language-select-menu')]"
             driver.find_element_by_xpath(langmenu).click()
-            time.sleep(random.uniform(1, 3))
+            time.sleep(random.uniform(1, 4))
 
             langcheck = f"//div[contains(@class, 'tw-checkbox') and contains(@data-language-code, '{language}')]/label"
             WebDriverWait(driver, 10).until(
                 ec.presence_of_element_located((By.XPATH, langcheck))).click()
-            time.sleep(random.uniform(1, 3))
+            time.sleep(random.uniform(1, 4))
 
         if closechat:  # Click the collapse chat button
             togglecol = "//button[contains(@data-a-target, 'right-column__toggle-collapse-btn')]"
             driver.find_element_by_xpath(togglecol).click()
-            time.sleep(random.uniform(1, 3))
+            time.sleep(random.uniform(1, 4))
+
     except NoSuchElementException:
         print(f"Clicking doesn't work on '{url}'")
         driver.quit()
@@ -79,20 +81,23 @@ def get_twitch_html(url, language=None, closechat=False):
 
 def get_href_handler(htmlsource, href):
     """
-        Return the last part of the first url found if the href parameter is in
-        the href form the url found.
+        Return a list of the last parts of any url found if the href parameter
+        is in the href from the url.
 
-        e.g. 'lolirotve' from the url https://twitter.com/lolirotve when href is
-        'twitter.com/'
+        e.g. '[lolirotve]' from the url https://twitter.com/lolirotve when href
+        is 'twitter.com/' and is the only link
     """
 
     soup = BeautifulSoup(htmlsource, "html.parser")
 
+    found = []
     for a in soup.find_all("a", href=True):
         if href in a["href"]:
-            return a["href"].replace("/", " ").strip().split(" ")[-1]
+            url = urlparse(a["href"])
+            handler = url.path.replace("/", " ").strip().split(" ")[-1]
+            found.append(handler)
 
-    return False
+    return found
 
 
 def get_directory_data(url, language="en"):
@@ -153,8 +158,8 @@ def get_user_data(url):
     soup = BeautifulSoup(htmlsource, "html.parser")
     data = {}
 
-    user = soup.find("a", class_="channel-header__user").find("h5")
-    user = user.text.lower() if user else False
+    user = soup.find("a", {'class': 'channel-header__user', 'href': True})
+    user = user['href'].replace('/', '').lower() if user else False
 
     status = soup.find("span", {
         "data-a-target": "stream-title",
@@ -188,6 +193,7 @@ def get_user_data(url):
 
     twitter = get_href_handler(htmlsource, "twitter.com/")
     instagram = get_href_handler(htmlsource, "instagram.com/")
+    facebook = get_href_handler(htmlsource, "facebook.com/")
     youtubeuser = get_href_handler(htmlsource, "youtube.com/user/")
     youtubechannel = get_href_handler(htmlsource, "youtube.com/channel/")
     discord = get_href_handler(htmlsource, "discord.gg/")
@@ -225,20 +231,31 @@ def get_user_data(url):
     except AttributeError:
         videos = -1
 
+    try:
+        tags = soup.find('div', {
+            'class': 'tw-card-body'
+        }).find('div', {
+            'class': 'tw-flex'
+        }).find_all("p")
+        tags = [i.text for i in tags]
+    except AttributeError:
+        tags = []
+
     data[user] = {
-        "status": status,
-        "twitter": twitter,
-        "instagram": instagram,
-        "youtube_user": youtubeuser,
-        "youtube_channel": youtubechannel,
-        "discord": discord,
-        "viewers": int(viewers),
-        "total_views": int(total_views),
-        "followers": int(followers),
-        "following": int(following),
-        "videos_count": int(videos),
-        "tags": "",
-        "time": time.time()
+        'status': status,
+        'twitter': twitter,
+        'instagram': instagram,
+        'facebook': facebook,
+        'youtube_user': youtubeuser,
+        'youtube_channel': youtubechannel,
+        'discord': discord,
+        'viewers': int(viewers),
+        'total_views': int(total_views),
+        'followers': int(followers),
+        'following': int(following),
+        'videos_count': int(videos),
+        'tags': tags,
+        'time': time.time()
     }
 
     return data
@@ -263,6 +280,6 @@ if __name__ == "__main__":
                 language="es"), f)
 
     with open(os.path.join(HOME, "sample-user.json"), "w") as f:
-        json.dump(get_user_data("https://www.twitch.tv/kephrii"), f)
+        json.dump(get_user_data("https://www.twitch.tv/aimbotcalvin"), f)
 
     print(f"\nDone! ({round(time.time() - DELTA)}s)")
