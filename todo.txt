@@ -2,6 +2,7 @@
         TO DO
 
 
+    Decent read me
     Include all twitter accounts found
     Include facebook on user profile scrap
     Improve youtube detection
