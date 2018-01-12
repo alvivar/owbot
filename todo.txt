@@ -3,11 +3,14 @@
 
 
     Decent read me
-    Include all twitter accounts found
-    Include facebook on user profile scrap
     Improve youtube detection
-    Include profile tags?
 
+
+    2018/01/12 03:46 am
+    x Include facebook on user profile scrap
+    x Include profile tags
+    x Include all twitter accounts found
+    x Bug fixed, url arguments ignored when scrapping social handlers
 
     2018/01/10 05:23 pm
     x Offline profiles are different to online, detect
