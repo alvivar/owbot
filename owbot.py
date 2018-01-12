@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
         # Avoid spamming users
 
-        ban = 8 * 3600
+        ban = 12 * 3600
         if time.time() - CONFIG['promoted'][user]['last_time'] < ban:
             continue
 
@@ -128,8 +128,8 @@ if __name__ == "__main__":
         status = status if len(status) < 200 else status[:200] + "[...]"
         status = " ".join(status.split())
 
-        twitter = userdata[user]['twitter']
-        twitter = f" (@{twitter}) " if twitter else " "
+        twitter = " ".join([f"@{i}" for i in userdata[user]['twitter']])
+        twitter = f" ({twitter}) " if twitter else " "
 
         imageurl = dirdata['image']
         imagefile = os.path.join(IMAGESPATH, os.path.basename(imageurl))
