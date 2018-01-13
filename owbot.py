@@ -76,28 +76,29 @@ except (IOError, ValueError):
 if __name__ == "__main__":
 
     DELTA = time.time()
-    print("OWBOT!")
+    print("OWbot v0.1")
 
     # Command line args
 
-    PARSER = argparse.ArgumentParser(description='Overwatch + Twitch.tv Bot')
+    PARSER = argparse.ArgumentParser(
+        description='Bot that tweets the best streamers from Twitch.tv')
     PARSER.add_argument(
         "-s",
         "--start",
-        help="start the scrapping + queue process",
+        help="start the scrapping + Qbot queue process",
         action="store_true")
     PARSER.add_argument(
         "-d",
         "--delay",
         help=
-        "seconds to wait between complete cycles, 600s (10m) default, use 0 or less to not repeat at all",
-        default=10 * 60,
+        "seconds to wait between complete cycles, 900s (15m) default, use 0 or less to not repeat at all",
+        default=15 * 60,
         type=int)
     PARSER.add_argument(
         "-b",
         "--ban",
         help=
-        "seconds to wait before repeating an account again, 28800s (8h) default",
+        "seconds to wait before republishing an account again, 28800s (8h) default",
         default=8 * 3600,
         type=int)
     ARGS = PARSER.parse_args()
@@ -131,14 +132,16 @@ if __name__ == "__main__":
     COUNT = 1
     while REPEAT:
 
-        # Prepare a tweet for the top player
+        # Prepare a tweet for the top Twitch.tv streamer
+
+        print("\nScrapping data...")
 
         DIRURL = "https://www.twitch.tv/directory/game/Overwatch"
         DIRECTORY = get_directory_data(DIRURL, language="en")
-        print(f"Scrapped '{DIRURL}'")
+        print(f"Scrapped: {DIRURL}")
 
         if not DIRECTORY:
-            input(f"\nError scraping '{DIRURL}'")
+            input(f"\nError scraping: {DIRURL}")
             sys.exit(1)
 
         with open(
@@ -168,10 +171,10 @@ if __name__ == "__main__":
 
             url = f"https://www.twitch.tv/{user}"
             userdata = get_user_data(url)
-            print(f"Scrapped '{url}'\n")
+            print(f"Scrapped: {url}")
 
             if not userdata:
-                input(f"\nError scraping '{url}'")
+                input(f"\nError scraping: {url}")
                 sys.exit(1)
 
             with open(
@@ -179,6 +182,8 @@ if __name__ == "__main__":
                                  f"{user}({round(time.time())}).json"),
                     "w") as f:
                 json.dump(userdata, f)
+
+            print("\nExtracting data...\n")
 
             status = userdata[user]['status']
             status = status if len(status) < 200 else status[:200] + "[...]"
@@ -188,10 +193,11 @@ if __name__ == "__main__":
             twitter = f" ({twitter}) " if twitter else " "
 
             imageurl = dirdata['image']
+            print(f"Image url: {imageurl}")
             imagefile = os.path.join(IMAGESPATH, os.path.basename(imageurl))
             with urlopen(imageurl) as r, open(imagefile, 'wb') as f:
                 shutil.copyfileobj(r, f)
-                print(f"Downloaded '{imagefile}'")
+                print(f"Downloaded: {imagefile}")
 
             # Queue tweet in Qbot
 
@@ -199,7 +205,8 @@ if __name__ == "__main__":
             QBOT['messages'].append(tweet)
             with open(QBOTJSON, "w") as f:
                 json.dump(QBOT, f)
-                print(f"Tweet queued on '{QBOTJSON}'")
+                print(f"Tweet: {tweet['text']}")
+                print(f"Queued on Qbot: {QBOTJSON}")
 
             # Register
 
@@ -218,10 +225,8 @@ if __name__ == "__main__":
             print()
 
         while REPEAT and WAIT < ARGS.delay:
-            sys.stdout.write(
-                f"\r'q' and enter to quit ({ARGS.delay - WAIT}s): ")
+            sys.stdout.write(f"\r'q' + enter to quit ({ARGS.delay - WAIT}s): ")
             sys.stdout.flush()
-
             WAIT += 1
             time.sleep(1)
 
