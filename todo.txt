@@ -2,6 +2,7 @@
         TO DO
 
 
+    cx_Freeze setup script
     Decent read me
     Improve youtube detection
     Not all profile tags are detected
