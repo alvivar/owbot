@@ -98,8 +98,8 @@ if __name__ == "__main__":
         "-b",
         "--ban",
         help=
-        "seconds to wait before republishing an account again, 28800s (8h) default",
-        default=8 * 3600,
+        "seconds to wait before republishing an account again, 43200s (12h) default",
+        default=12 * 3600,
         type=int)
     ARGS = PARSER.parse_args()
 
