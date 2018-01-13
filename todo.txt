@@ -2,6 +2,7 @@
         TO DO
 
 
+    Extract handlers from twitter fails with this https://twitter.com/oasisoverwatch/status/798417136083472384
     Decent read me
     Biggers images by forcing size before download
     Improve youtube detection
