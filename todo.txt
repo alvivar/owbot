@@ -3,6 +3,7 @@
 
 
     Decent read me
+    Biggers images by forcing size before download
     Improve youtube detection
     Not all profile tags are detected
 
