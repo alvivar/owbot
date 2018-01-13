@@ -107,7 +107,7 @@ def get_href_handler(htmlsource, href):
         if href in a["href"]:
             url = urlparse(a["href"])
             handler = url.path.replace("/", " ").strip().split(" ")[-1]
-            found.append(handler)
+            found.append(handler.lower())
 
     return uniquelist(found)
 
