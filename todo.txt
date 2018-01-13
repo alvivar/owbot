@@ -4,6 +4,7 @@
 
     Decent read me
     Improve youtube detection
+    Not all profile tags are detected
 
 
     2018/01/12 03:46 am
