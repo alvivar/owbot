@@ -8,6 +8,7 @@
 import json
 import os
 import random
+import re
 import sys
 import time
 from urllib.parse import urlparse
@@ -112,10 +113,28 @@ def get_href_handler(htmlsource, href):
     return uniquelist(found)
 
 
-def get_directory_data(url, language="en"):
+def increase_image_resolution(url, sizeinc=200):
+    """
+        Return the same url with the hardcoded resolution increased.
+
+        https://live_user_overwatchleague-320x180.jpg ->
+        https://live_user_overwatchleague-520x380.jpg
+    """
+    resolution = re.split("-|\.", url)[-2]
+
+    w, h = resolution.split('x')
+    w = int(w) + sizeinc
+    h = int(h) + sizeinc
+
+    return url.replace(resolution, f"{w}x{h}")
+
+
+def get_directory_data(url, language="en", increase_image=0):
     """
         Return a dictionary with the data for each stream in a Twitch.tv game
         directory page like https://www.twitch.tv/directory/game/Overwatch
+
+        'increase_image' will force the hardcoded image to increase by the size.
     """
 
     htmlsource = get_twitch_html(url, language=language)
@@ -130,6 +149,8 @@ def get_directory_data(url, language="en"):
 
             image = html.find("img", src=True)
             image = image["src"] if image else False
+            if increase_image:
+                image = increase_image_resolution(image, increase_image)
 
             status = html.find(
                 "h3", class_="live-channel-card__title", title=True)
@@ -282,13 +303,15 @@ if __name__ == "__main__":
         json.dump(
             get_directory_data(
                 "https://www.twitch.tv/directory/game/Overwatch",
-                language="en"), f)
+                language="en",
+                increase_image=200), f)
 
     with open(os.path.join(HOME, "sample-directory-es.json"), "w") as f:
         json.dump(
             get_directory_data(
                 "https://www.twitch.tv/directory/game/Overwatch",
-                language="es"), f)
+                language="es",
+                increase_image=200), f)
 
     with open(os.path.join(HOME, "sample-user.json"), "w") as f:
         json.dump(get_user_data("https://www.twitch.tv/aimbotcalvin"), f)

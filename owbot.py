@@ -137,7 +137,8 @@ if __name__ == "__main__":
         print("\nScrapping data...")
 
         DIRURL = "https://www.twitch.tv/directory/game/Overwatch"
-        DIRECTORY = get_directory_data(DIRURL, language="en")
+        DIRECTORY = get_directory_data(
+            DIRURL, language="en", increase_image=200)
         print(f"Scrapped: {DIRURL}")
 
         if not DIRECTORY:
