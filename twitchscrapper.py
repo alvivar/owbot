@@ -79,6 +79,18 @@ def get_twitch_html(url, language=None, closechat=False):
     return html
 
 
+def uniquelist(l):
+    """
+        Return the list without repeated elements with their original order.
+    """
+    unique = []
+    for i in l:
+        if i not in unique:
+            unique.append(i)
+
+    return unique
+
+
 def get_href_handler(htmlsource, href):
     """
         Return a list of the last parts of any url found if the href parameter
@@ -97,7 +109,7 @@ def get_href_handler(htmlsource, href):
             handler = url.path.replace("/", " ").strip().split(" ")[-1]
             found.append(handler)
 
-    return found
+    return uniquelist(found)
 
 
 def get_directory_data(url, language="en"):
@@ -158,8 +170,7 @@ def get_user_data(url):
     soup = BeautifulSoup(htmlsource, "html.parser")
     data = {}
 
-    user = soup.find("a", {'class': 'channel-header__user', 'href': True})
-    user = user['href'].replace('/', '').lower() if user else False
+    user = url.replace("/", " ").strip().split(" ")[-1]
 
     status = soup.find("span", {
         "data-a-target": "stream-title",
