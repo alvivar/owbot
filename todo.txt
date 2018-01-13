@@ -2,11 +2,15 @@
         TO DO
 
 
-    cx_Freeze setup script
     Decent read me
     Improve youtube detection
     Not all profile tags are detected
 
+
+    2018/01/12 09:10 pm
+    x cx_Freeze setup script
+    x argparse +1
+    x bot commands
 
     2018/01/12 03:46 am
     x Include facebook on user profile scrap
