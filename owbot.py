@@ -81,7 +81,7 @@ if __name__ == "__main__":
     # Command line args
 
     PARSER = argparse.ArgumentParser(
-        description='Bot that tweets the best streamers from Twitch.tv')
+        description='Bot that tweets about the best streamers from Twitch.tv')
     PARSER.add_argument(
         "-s",
         "--start",
@@ -100,6 +100,13 @@ if __name__ == "__main__":
         help=
         "seconds to wait before republishing an account again, 43200s (12h) default",
         default=12 * 3600,
+        type=int)
+    PARSER.add_argument(
+        "-r",
+        "--reply",
+        help=
+        "seconds to wait before replying to an account again, 2592000s (1 month) default",
+        default=24 * 3600 * 30,
         type=int)
     ARGS = PARSER.parse_args()
 
@@ -159,13 +166,14 @@ if __name__ == "__main__":
             CONFIG['promoted'][user] = CONFIG['promoted'].get(
                 user, {
                     'count': 0,
-                    'first_time': time.time(),
-                    'last_time': 0
+                    'found': time.time(),
+                    'last_promo': 0,
+                    'last_reply': 0
                 })
 
             # Avoid spamming users
 
-            if time.time() - CONFIG['promoted'][user]['last_time'] < ARGS.ban:
+            if time.time() - CONFIG['promoted'][user]['last_promo'] < ARGS.ban:
                 continue
 
             # Data
@@ -186,12 +194,24 @@ if __name__ == "__main__":
 
             print("\nExtracting data...\n")
 
-            status = userdata[user]['status']
-            status = status if len(status) < 200 else status[:200] + "[...]"
+            status = userdata[user]['status'].replace('@', '')  # No twitter
             status = " ".join(status.split())
+            status = status if len(status) < 200 else status[:200] + "[...]"
 
-            twitter = " ".join([f"@{i}" for i in userdata[user]['twitter']])
-            twitter = f" ({twitter}) " if twitter else " "
+            # Post twitter accounts if the reply ban has passed
+
+            last_reply = CONFIG['promoted'][user]['last_reply']
+            allow_reply = time.time() - last_reply > ARGS.reply
+
+            if allow_reply:
+                twitter_accounts = userdata[user]['twitter']
+                twitter = " ".join([f"@{i}" for i in twitter_accounts])
+                twitter = f" ({twitter}) " if twitter else " "
+                CONFIG['promoted'][user]['last_reply'] = time.time()
+            else:
+                twitter = " "
+
+            # Images
 
             imageurl = dirdata['image']
             print(f"Image url: {imageurl}")
@@ -212,7 +232,7 @@ if __name__ == "__main__":
             # Register
 
             CONFIG['promoted'][user]['count'] += 1
-            CONFIG['promoted'][user]['last_time'] += time.time()
+            CONFIG['promoted'][user]['last_promo'] = time.time()
             with open(CONFIGJSON, "w") as f:
                 json.dump(CONFIG, f)
 
