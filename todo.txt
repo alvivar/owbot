@@ -3,11 +3,18 @@
 
 
     Extract handlers from twitter fails with this https://twitter.com/oasisoverwatch/status/798417136083472384
+    Top viewers ranking
     Decent read me
-    Biggers images by forcing size before download
     Improve youtube detection
     Not all profile tags are detected
 
+
+    2018/01/14 12:00 am
+    x Double twitter handler when they are already on the status
+    x Ban twitch account from status
+
+    2018/01/13 02:15 pm
+    x Biggers images by forcing hardcoded size before download
 
     2018/01/12 09:10 pm
     x cx_Freeze setup script
