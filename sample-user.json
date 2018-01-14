@@ -1,25 +1,27 @@
 {
     "aimbotcalvin": {
-        "status": "TSM Calvin | only lasted so long",
+        "status": "TSM Calvin | timeless",
         "twitter": [
             "aimbotcalvin"
         ],
         "instagram": [],
         "facebook": [],
-        "youtube_user": [],
-        "youtube_channel": [
-            "ucdugdxty7wgw1mes30gkgrq"
+        "youtube": [
+            "https://www.youtube.com/playlist?list=plof5dvl04iegizoud9v-tepsjnw_nuwxv",
+            "https://www.youtube.com/playlist?list=plof5dvl04iehigbsuokp1urz_ney2mrnr",
+            "https://www.youtube.com/playlist?list=plof5dvl04iehf2gc6hqsdstxkz9rgenvq",
+            "https://www.youtube.com/channel/ucdugdxty7wgw1mes30gkgrq"
         ],
         "discord": [],
-        "viewers": 6584,
-        "total_views": 13020653,
-        "followers": 420012,
-        "following": 136,
+        "viewers": 5737,
+        "total_views": 13067554,
+        "followers": 420881,
+        "following": 137,
         "videos_count": 59,
         "tags": [
             "Overwatch",
             "TSM"
         ],
-        "time": 1515833777.3297627
+        "time": 1515915508.8146348
     }
 }
