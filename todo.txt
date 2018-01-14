@@ -2,12 +2,13 @@
         TO DO
 
 
-    Extract handlers from twitter fails with this https://twitter.com/oasisoverwatch/status/798417136083472384
     Top viewers ranking
     Decent read me
-    Improve youtube detection
     Not all profile tags are detected
 
+    2018/01/14 01:58 am
+    x Extract handlers from twitter fails with this https://twitter.com/oasisoverwatch/status/798417136083472384
+    x Improve youtube detection
 
     2018/01/14 12:00 am
     x Double twitter handler when they are already on the status
