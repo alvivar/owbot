@@ -39,7 +39,7 @@ try:
     CONFIG = json.load(open(CONFIGJSON, "r"))
 except (IOError, ValueError):
     CONFIG = {"promoted": {}}
-    with open(CONFIGJSON, "w") as f:
+    with open(CONFIGJSON, 'w') as f:
         json.dump(CONFIG, f)
 
 QBOTJSON = os.path.join(HOME, "qbot.json")
@@ -47,25 +47,25 @@ try:
     QBOT = json.load(open(QBOTJSON, "r"))
 except (IOError, ValueError):
     QBOT = {
-        "options": {
-            "refresh_schedule": True
+        'options': {
+            'refresh_schedule': True
         },
-        "schedule": {
-            "name":
-            "overwatchbest",
-            "days": [
-                "monday", "tuesday", "wednesday", "thursday", "friday",
-                "saturday", "sunday"
+        'schedule': {
+            'name':
+            'overwatchbest',
+            'days': [
+                'monday', 'tuesday', 'wednesday', 'thursday', 'friday',
+                'saturday', 'sunday'
             ],
-            "hours": []
+            'hours': []
         },
-        "twitter_tokens": {
-            "consumer_key": "find",
-            "consumer_secret": "them",
-            "oauth_token": "on",
-            "oauth_secret": "apps.twitter.com"
+        'twitter_tokens': {
+            'consumer_key': 'find',
+            'consumer_secret': 'them',
+            'oauth_token': 'on',
+            'oauth_secret': 'apps.twitter.com'
         },
-        "messages": []
+        'messages': []
     }
 
     # All day, every 15 minutes
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     # Command line args
 
     PARSER = argparse.ArgumentParser(
-        description='Bot that tweets about the best streamers from Twitch.tv')
+        description="Bot that tweets about the best streamers from Twitch.tv")
     PARSER.add_argument(
         "-s",
         "--start",
@@ -155,7 +155,7 @@ if __name__ == "__main__":
         with open(
                 os.path.join(DATAPATH,
                              f"directory({round(time.time())}).json"),
-                "w") as f:
+                'w') as f:
             json.dump(DIRECTORY, f)
 
         for user, dirdata in DIRECTORY.items():
@@ -189,7 +189,7 @@ if __name__ == "__main__":
             with open(
                     os.path.join(DATAPATH,
                                  f"{user}({round(time.time())}).json"),
-                    "w") as f:
+                    'w') as f:
                 json.dump(userdata, f)
 
             print("\nExtracting data...\n")
@@ -224,7 +224,7 @@ if __name__ == "__main__":
 
             tweet = {'text': f"{status}{twitter}{url}", 'image': imagefile}
             QBOT['messages'].append(tweet)
-            with open(QBOTJSON, "w") as f:
+            with open(QBOTJSON, 'w') as f:
                 json.dump(QBOT, f)
                 print(f"Tweet: {tweet['text']}")
                 print(f"Queued on Qbot: {QBOTJSON}")
@@ -233,7 +233,7 @@ if __name__ == "__main__":
 
             CONFIG['promoted'][user]['count'] += 1
             CONFIG['promoted'][user]['last_promo'] = time.time()
-            with open(CONFIGJSON, "w") as f:
+            with open(CONFIGJSON, 'w') as f:
                 json.dump(CONFIG, f)
 
             # Just once
