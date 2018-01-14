@@ -26,12 +26,12 @@ HOME = os.path.normpath(  # The script directory + cxfreeze compatibility
         sys.executable if getattr(sys, 'frozen', False) else __file__))
 
 CONFIG = {}
-CONFIGJSON = os.path.join(HOME, "config-twitchscrapper.json")
+CONFIGJSON = os.path.join(HOME, 'config-twitchscrapper.json')
 try:
-    CONFIG = json.load(open(CONFIGJSON, "r"))
+    CONFIG = json.load(open(CONFIGJSON, 'r'))
 except (IOError, ValueError):
-    CONFIG = {"config": {"chrome_driver_path": "chromedriver.exe"}}
-    with open(CONFIGJSON, "w") as f:
+    CONFIG = {'config': {'chrome_driver_path': 'chromedriver.exe'}}
+    with open(CONFIGJSON, 'w') as f:
         json.dump(CONFIG, f)
 
 
@@ -47,7 +47,7 @@ def get_twitch_html(url, language=None, closechat=False):
     """
 
     driver = webdriver.Chrome(
-        os.path.join(HOME, CONFIG["config"]["chrome_driver_path"]))
+        os.path.join(HOME, CONFIG['config']['chrome_driver_path']))
 
     driver.maximize_window()
     driver.get(url)
@@ -82,7 +82,7 @@ def get_twitch_html(url, language=None, closechat=False):
 
 def uniquelist(l):
     """
-        Return the list without repeated elements with their original order.
+        Return the list without repeated elements and their original order.
     """
     unique = []
     for i in l:
@@ -92,22 +92,28 @@ def uniquelist(l):
     return unique
 
 
-def get_href_handler(htmlsource, href):
+def get_href_handler(htmlsource, href, fullhref=False):
     """
-        Return a list of the last parts of any url found if the href parameter
-        is in the href from the url.
+        Return a list of the social handlers from all urls in the 'htmlsource'
+        that contains 'href' in them, assuming that the social handler is the
+        first keyword after the domain.
 
-        e.g. '[lolirotve]' from the url https://twitter.com/lolirotve when href
-        is 'twitter.com/' and is the only link
+        https://twitter.com/lolirotve -> lolirotve
+        https://www.youtube.com/JJoNaKLove -> JJoNaKLove
+
+        If 'fullhref' is True, the complete url will be returned instead.
     """
 
-    soup = BeautifulSoup(htmlsource, "html.parser")
+    soup = BeautifulSoup(htmlsource, 'html.parser')
 
     found = []
-    for a in soup.find_all("a", href=True):
-        if href in a["href"]:
-            url = urlparse(a["href"])
-            handler = url.path.replace("/", " ").strip().split(" ")[-1]
+    for a in soup.find_all('a', href=True):
+        if href in a['href']:
+            if fullhref:
+                handler = a['href']
+            else:
+                url = urlparse(a['href'])
+                handler = url.path.replace('/', ' ').strip().split()[0]
             found.append(handler.lower())
 
     return uniquelist(found)
@@ -141,34 +147,34 @@ def get_directory_data(url, language="en", increase_image=0):
     if not htmlsource:
         return False
 
-    soup = BeautifulSoup(htmlsource, "html.parser")
+    soup = BeautifulSoup(htmlsource, 'html.parser')
     data = {}
 
     try:
-        for html in soup.find_all("div", "stream-thumbnail"):
+        for html in soup.find_all('div', 'stream-thumbnail'):
 
-            image = html.find("img", src=True)
-            image = image["src"] if image else False
+            image = html.find('img', src=True)
+            image = image['src'] if image else False
             if increase_image:
                 image = increase_image_resolution(image, increase_image)
 
             status = html.find(
-                "h3", class_="live-channel-card__title", title=True)
-            status = status["title"] if status else False
+                'h3', class_='live-channel-card__title', title=True)
+            status = status['title'] if status else False
 
-            viewers = html.find("span", class_="tw-ellipsis")
-            viewers = viewers.text.split(" ")[0] if viewers else False
+            viewers = html.find('span', class_='tw-ellipsis')
+            viewers = viewers.text.split(' ')[0] if viewers else False
 
             user = html.find(
-                "a", class_="live-channel-card__videos", href=True)
-            user = user["href"].replace(
-                "/", " ").strip().split(" ")[0] if user else False
+                'a', class_='live-channel-card__videos', href=True)
+            user = user['href'].replace(
+                '/', ' ').strip().split(' ')[0] if user else False
 
             data[user] = {
-                "image": image,
-                "status": status,
-                "viewers": viewers,
-                "time": time.time()
+                'image': image,
+                'status': status,
+                'viewers': viewers,
+                'time': time.time()
             }
     except AttributeError:
         print(
@@ -188,23 +194,23 @@ def get_user_data(url):
     if not htmlsource:
         return False
 
-    soup = BeautifulSoup(htmlsource, "html.parser")
+    soup = BeautifulSoup(htmlsource, 'html.parser')
     data = {}
 
-    user = url.replace("/", " ").strip().split(" ")[-1]
+    user = url.replace('/', ' ').strip().split(' ')[-1]
 
-    status = soup.find("span", {
-        "data-a-target": "stream-title",
-        "title": True
+    status = soup.find('span', {
+        'data-a-target': 'stream-title',
+        'title': True
     })
-    status = status["title"] if status else False
+    status = status['title'] if status else False
 
     try:
-        viewers = soup.find("div", {
-            "class": "tw-stat",
-            "data-a-target": "channel-viewers-count"
-        }).find("span", {
-            "data-a-target": "tw-stat-value"
+        viewers = soup.find('div', {
+            'class': 'tw-stat',
+            'data-a-target': 'channel-viewers-count'
+        }).find('span', {
+            'data-a-target': 'tw-stat-value'
         })
         viewers = viewers.text if viewers else False
         viewers = "".join([c for c in viewers if c.isdigit()])
@@ -212,11 +218,11 @@ def get_user_data(url):
         viewers = -1
 
     try:
-        total_views = soup.find("div", {
-            "class": "tw-stat",
-            "data-a-target": "total-views-count"
-        }).find("span", {
-            "data-a-target": "tw-stat-value"
+        total_views = soup.find('div', {
+            'class': 'tw-stat',
+            'data-a-target': 'total-views-count'
+        }).find('span', {
+            'data-a-target': 'tw-stat-value'
         })
         total_views = total_views.text if total_views else False
         total_views = "".join([c for c in total_views if c.isdigit()])
@@ -226,38 +232,37 @@ def get_user_data(url):
     twitter = get_href_handler(htmlsource, "twitter.com/")
     instagram = get_href_handler(htmlsource, "instagram.com/")
     facebook = get_href_handler(htmlsource, "facebook.com/")
-    youtubeuser = get_href_handler(htmlsource, "youtube.com/user/")
-    youtubechannel = get_href_handler(htmlsource, "youtube.com/channel/")
+    youtube = get_href_handler(htmlsource, "youtube.com/", fullhref=True)
     discord = get_href_handler(htmlsource, "discord.gg/")
 
     try:
-        followers = soup.find("a", {
-            "data-a-target": "followers-channel-header-item"
-        }).find("div", {
-            "class": "channel-header__item-count"
-        }).find("span")
+        followers = soup.find('a', {
+            'data-a-target': 'followers-channel-header-item'
+        }).find('div', {
+            'class': 'channel-header__item-count'
+        }).find('span')
         followers = followers.text if followers else False
         followers = "".join([c for c in followers if c.isdigit()])
     except AttributeError:
         followers = -1
 
     try:
-        following = soup.find("a", {
-            "data-a-target": "following-channel-header-item"
-        }).find("div", {
-            "class": "channel-header__item-count"
-        }).find("span")
+        following = soup.find('a', {
+            'data-a-target': 'following-channel-header-item'
+        }).find('div', {
+            'class': 'channel-header__item-count'
+        }).find('span')
         following = following.text if following else False
         following = "".join([c for c in following if c.isdigit()])
     except AttributeError:
         following = -1
 
     try:
-        videos = soup.find("a", {
-            "data-a-target": "videos-channel-header-item"
-        }).find("div", {
-            "class": "channel-header__item-count"
-        }).find("span")
+        videos = soup.find('a', {
+            'data-a-target': 'videos-channel-header-item'
+        }).find('div', {
+            'class': 'channel-header__item-count'
+        }).find('span')
         videos = videos.text if videos else False
         videos = "".join([c for c in videos if c.isdigit()])
     except AttributeError:
@@ -278,8 +283,7 @@ def get_user_data(url):
         'twitter': twitter,
         'instagram': instagram,
         'facebook': facebook,
-        'youtube_user': youtubeuser,
-        'youtube_channel': youtubechannel,
+        'youtube': youtube,
         'discord': discord,
         'viewers': int(viewers),
         'total_views': int(total_views),
