@@ -10,6 +10,9 @@
     Not all profile tags are detected
 
 
+    2018/01/15 04:26 pm
+    x Images on daily folders
+
     2018/01/15 03:35 am
     x Better file names and daily data directory
     x Better time input as argument, seconds from (h m s d) after a number
