@@ -14,6 +14,6 @@ setup(
     name='owbot',
     version='0.1',
     description=
-    "Bot that collect and tweet the top Overwatch streamers from Twitch.tv",
+    "Bot that collects and tweets the top Overwatch streamers from Twitch.tv",
     executables=EXECUTABLES,
     options=OPTIONS)
