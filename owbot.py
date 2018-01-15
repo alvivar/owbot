@@ -16,7 +16,7 @@ import threading
 import time
 from urllib.request import urlopen
 
-from twitchscrapper import get_directory_data, get_user_data
+from twitchscrapper import get_directory_data, get_user_data, uniquelist
 
 # Paths
 
@@ -194,22 +194,32 @@ if __name__ == "__main__":
 
             print("\nExtracting data...\n")
 
-            status = userdata[user]['status'].replace('@', '')  # No twitter
+            status = userdata[user]['status'].replace('@', '')  # No replies
             status = " ".join(status.split())
             status = status if len(status) < 200 else status[:200] + "[...]"
 
             # Post twitter accounts if the reply ban has passed
 
-            last_reply = CONFIG['promoted'][user]['last_reply']
-            allow_reply = time.time() - last_reply > ARGS.reply
+            # HACK No need to ban reply, because we aren't using @ now, so,
+            # legacy code
 
-            if allow_reply:
-                twitter_accounts = userdata[user]['twitter']
-                twitter = " ".join([f"@{i}" for i in twitter_accounts])
-                twitter = f" ({twitter}) " if twitter else " "
-                CONFIG['promoted'][user]['last_reply'] = time.time()
-            else:
-                twitter = " "
+            # last_reply = CONFIG['promoted'][user]['last_reply']
+            # allow_reply = time.time() - last_reply > ARGS.reply
+            # if allow_reply:
+
+            twitter_accounts = userdata[user]['twitter']
+            twitter = " ".join([f"@{i}" for i in twitter_accounts])
+            twitter = f" ({twitter}) " if twitter else " "
+
+            # if twitter:
+            #     CONFIG['promoted'][user]['last_reply'] = time.time()
+            # else:
+            #     twitter = " "
+
+            # Tags from Twitter and Twitch usernames
+
+            tags = uniquelist(twitter_accounts + [user])
+            tags = " ".join([f"#{i}" for i in tags])
 
             # Images
 
@@ -222,7 +232,7 @@ if __name__ == "__main__":
 
             # Queue tweet in Qbot
 
-            tweet = {'text': f"{status}{twitter}{url}", 'image': imagefile}
+            tweet = {'text': f"{status} {tags}", 'image': imagefile}
             QBOT['messages'].append(tweet)
             with open(QBOTJSON, 'w') as f:
                 json.dump(QBOT, f)
