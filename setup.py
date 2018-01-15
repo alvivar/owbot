@@ -1,4 +1,6 @@
-""" Create an .exe with cx_Freeze, by calling 'python setup.py build'. """
+"""
+    Create an .exe with cx_Freeze, by calling 'python setup.py build'.
+"""
 
 from cx_Freeze import Executable, setup
 
