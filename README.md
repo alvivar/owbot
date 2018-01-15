@@ -2,7 +2,7 @@
 
 ## Bot that collects and tweets the top Overwatch streamers from Twitch.tv
 
-### Info
+### Details
 
 - **twitchscrapper.py** scraps data from a game directory and a user page
 - **owbot.py** handles the scrap cycle, **#1** the **Overwatch** directory data, **#2** the top streamer data, **#3** queue a tweet about it using **[Qbot](https://github.com/alvivar/qbot)**, then waits before repeating again
