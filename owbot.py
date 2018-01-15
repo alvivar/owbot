@@ -5,6 +5,7 @@
 """
 
 import argparse
+import datetime
 import json
 import os
 import shutil
@@ -72,15 +73,15 @@ except (IOError, ValueError):
     ]
 
 
-def strseconds(strtime):
+def str2seconds(strtime):
     """
         Return a int with the seconds from particular literals.
 
         e.g
             "1h" -> 3600
             "20m" -> 1200
-            "10s" | "10" -> 10
-            "10sm" -> None
+            "30s" | "30" -> 30
+            "30sm" -> None
             "1d" -> 86400s (1 day)
     """
 
@@ -105,6 +106,16 @@ def strseconds(strtime):
     return result
 
 
+def todaystr():
+    """
+        Return the year, month and day joined as string.
+
+        e.g. 20180115
+    """
+    today = datetime.datetime.today()
+    return f"{today.year}{today.month:02}{today.day:02}"
+
+
 if __name__ == "__main__":
 
     DELTA = time.time()
@@ -114,7 +125,8 @@ if __name__ == "__main__":
 
     PARSER = argparse.ArgumentParser(
         description=
-        "Bot that tweets and collects the top streamers from Twitch.tv")
+        "Bot that collects and tweets the top Overwatch streamers from Twitch.tv"
+    )
     PARSER.add_argument(
         "-s",
         "--start",
@@ -159,8 +171,8 @@ if __name__ == "__main__":
 
     # Repeat cycle
 
-    DELAY = strseconds(ARGS.delay)
-    BAN = strseconds(ARGS.ban)
+    DELAY = str2seconds(ARGS.delay)
+    BAN = str2seconds(ARGS.ban)
 
     WAIT = 0
     COUNT = 1
@@ -179,11 +191,18 @@ if __name__ == "__main__":
             input(f"\nError scraping: {DIRURL}")
             sys.exit(1)
 
+        # Dump directory
+
+        DIRPATH = os.path.join(DATAPATH, todaystr())
+        if not os.path.exists(DIRPATH):
+            os.makedirs(DIRPATH)
+
         with open(
-                os.path.join(DATAPATH,
-                             f"directory({round(time.time())}).json"),
+                os.path.join(DIRPATH, f"directory.{round(time.time())}.json"),
                 'w') as f:
             json.dump(DIRECTORY, f)
+
+        # Top Overwatch Twitch streamer
 
         for user, dirdata in DIRECTORY.items():
 
@@ -212,11 +231,19 @@ if __name__ == "__main__":
                 input(f"\nError scraping: {url}")
                 sys.exit(1)
 
+            # Dump user
+
+            USERPATH = os.path.join(DATAPATH, todaystr())
+            if not os.path.exists(USERPATH):
+                os.makedirs(USERPATH)
+
             with open(
-                    os.path.join(DATAPATH,
-                                 f"{user}({round(time.time())}).json"),
+                    os.path.join(USERPATH,
+                                 f"{user}.{round(time.time())}.json"),
                     'w') as f:
                 json.dump(userdata, f)
+
+            # Data
 
             print("\nExtracting data...\n")
 
