@@ -73,19 +73,23 @@ except (IOError, ValueError):
     ]
 
 
-def str2seconds(strtime):
+def str2seconds(strtime, default=0):
     """
-        Return a int with the seconds from particular literals.
+        Return the seconds represented in 'strtime'. 'default' will be returned
+        if 'strtime' is malformed.
 
         e.g
-            "1h" -> 3600
-            "20m" -> 1200
-            "30s" | "30" -> 30
+            "1h" -> 3600s
+            "2m" -> 120s
+            "30s" | "30" -> 30s
             "30sm" -> None
             "1d" -> 86400s (1 day)
+
+        TODO
+            "2h30m10s" -> 7200s + 1800s + 10
     """
 
-    result = None
+    result = default
 
     strtime = strtime.lower()  # Case insensitive
     strdigits = "".join([i for i in strtime if i.isdigit()])
@@ -171,8 +175,8 @@ if __name__ == "__main__":
 
     # Repeat cycle
 
-    DELAY = str2seconds(ARGS.delay)
-    BAN = str2seconds(ARGS.ban)
+    DELAY = str2seconds(ARGS.delay, default=str2seconds("3h"))
+    BAN = str2seconds(ARGS.ban, default=str2seconds("7d"))
 
     WAIT = 0
     COUNT = 1
