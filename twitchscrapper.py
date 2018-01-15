@@ -28,7 +28,8 @@ HOME = os.path.normpath(  # The script directory + cxfreeze compatibility
 CONFIG = {}
 CONFIGJSON = os.path.join(HOME, 'config-twitchscrapper.json')
 try:
-    CONFIG = json.load(open(CONFIGJSON, 'r'))
+    with open(CONFIGJSON, 'r') as f:
+        CONFIG = json.load(f)
 except (IOError, ValueError):
     CONFIG = {'config': {'chrome_driver_path': 'chromedriver.exe'}}
     with open(CONFIGJSON, 'w') as f:

@@ -33,7 +33,8 @@ if not os.path.exists(DATAPATH):
 
 CONFIGJSON = os.path.join(HOME, "config-owbot.json")
 try:
-    CONFIG = json.load(open(CONFIGJSON, "r"))
+    with open(CONFIGJSON, "r") as f:
+        CONFIG = json.load(f)
 except (IOError, ValueError):
     CONFIG = {"promoted": {}}
     with open(CONFIGJSON, 'w') as f:
