@@ -1,8 +1,5 @@
 """
-    Overwatch + Twitch.tv + Twitter Bot
-
-    Look for the most viewed Overwatch player on Twitch.tv and publish his stuff
-    on Twitter.
+    Bot that collect and tweet the top Overwatch streamers from Twitch.tv
 
     @matnesis 2018/01/10
 """
@@ -73,6 +70,40 @@ except (IOError, ValueError):
         f"{h:02}:{m:02}" for h in range(0, 24) for m in range(0, 60, 15)
     ]
 
+
+def strseconds(strtime):
+    """
+        Return a int with the seconds from particular literals.
+
+        e.g
+            "1h" -> 3600
+            "20m" -> 1200
+            "10s" | "10" -> 10
+            "10sm" -> None
+            "1d" -> 86400s (1 day)
+    """
+
+    result = None
+
+    strtime = strtime.lower()  # Case insensitive
+    strdigits = "".join([i for i in strtime if i.isdigit()])
+
+    if len(strtime) == len(strdigits):  # Without simbol is seconds
+        result = int(strdigits)
+    elif len(strtime) > len(strdigits) + 1:  # Only one symbol allowed
+        result = None
+    elif 'd' in strtime:  # Days
+        result = 86400 * int(strdigits)
+    elif 'h' in strtime:  # Hours
+        result = 3600 * int(strdigits)
+    elif 'm' in strtime:  # Minutes
+        result = 60 * int(strdigits)
+    elif 's' in strtime:  # Seconds
+        result = int(strdigits)
+
+    return result
+
+
 if __name__ == "__main__":
 
     DELTA = time.time()
@@ -81,33 +112,25 @@ if __name__ == "__main__":
     # Command line args
 
     PARSER = argparse.ArgumentParser(
-        description="Bot that tweets about the best streamers from Twitch.tv")
+        description=
+        "Bot that tweets and collects the top streamers from Twitch.tv")
     PARSER.add_argument(
         "-s",
         "--start",
-        help="start the scrapping + Qbot queue process",
+        help="start the cycle, find the top streamer and queue it in Qbot",
         action="store_true")
     PARSER.add_argument(
         "-d",
         "--delay",
-        help=
-        "seconds to wait between complete cycles, 900s (15m) default, use 0 or less to not repeat at all",
-        default=15 * 60,
-        type=int)
+        help="delay between complete cycles, '3h' hours default",
+        default="3h",
+        type=str)
     PARSER.add_argument(
         "-b",
         "--ban",
-        help=
-        "seconds to wait before republishing an account again, 43200s (12h) default",
-        default=12 * 3600,
-        type=int)
-    PARSER.add_argument(
-        "-r",
-        "--reply",
-        help=
-        "seconds to wait before replying to an account again, 2592000s (1 month) default",
-        default=24 * 3600 * 30,
-        type=int)
+        help="delay between republishing an account again, '7d' days default",
+        default="7d",
+        type=str)
     ARGS = PARSER.parse_args()
 
     # TODO DANGEROUS code: All new options need to be here or they will be ignored
@@ -134,6 +157,9 @@ if __name__ == "__main__":
     THREAD.start()
 
     # Repeat cycle
+
+    DELAY = strseconds(ARGS.delay)
+    BAN = strseconds(ARGS.ban)
 
     WAIT = 0
     COUNT = 1
@@ -167,13 +193,12 @@ if __name__ == "__main__":
                 user, {
                     'count': 0,
                     'found': time.time(),
-                    'last_promo': 0,
-                    'last_reply': 0
+                    'last_promo': 0
                 })
 
             # Avoid spamming users
 
-            if time.time() - CONFIG['promoted'][user]['last_promo'] < ARGS.ban:
+            if time.time() - CONFIG['promoted'][user]['last_promo'] < BAN:
                 continue
 
             # Data
@@ -198,26 +223,9 @@ if __name__ == "__main__":
             status = " ".join(status.split())
             status = status if len(status) < 200 else status[:200] + "[...]"
 
-            # Post twitter accounts if the reply ban has passed
-
-            # HACK No need to ban reply, because we aren't using @ now, so,
-            # legacy code
-
-            # last_reply = CONFIG['promoted'][user]['last_reply']
-            # allow_reply = time.time() - last_reply > ARGS.reply
-            # if allow_reply:
-
-            twitter_accounts = userdata[user]['twitter']
-            twitter = " ".join([f"@{i}" for i in twitter_accounts])
-            twitter = f" ({twitter}) " if twitter else " "
-
-            # if twitter:
-            #     CONFIG['promoted'][user]['last_reply'] = time.time()
-            # else:
-            #     twitter = " "
-
             # Tags from Twitter and Twitch usernames
 
+            twitter_accounts = userdata[user]['twitter']
             tags = uniquelist(twitter_accounts + [user])
             tags = " ".join([f"#{i}" for i in tags])
 
@@ -251,12 +259,12 @@ if __name__ == "__main__":
 
         # Repeat
 
-        REPEAT = False if ARGS.delay <= 0 else REPEAT
+        REPEAT = False if DELAY <= 0 else REPEAT
         if REPEAT:
             print()
 
-        while REPEAT and WAIT < ARGS.delay:
-            sys.stdout.write(f"\r'q' + enter to quit ({ARGS.delay - WAIT}s): ")
+        while REPEAT and WAIT < DELAY:
+            sys.stdout.write(f"\r'q' + enter to quit ({DELAY - WAIT}s): ")
             sys.stdout.flush()
             WAIT += 1
             time.sleep(1)
