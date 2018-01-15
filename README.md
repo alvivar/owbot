@@ -1,2 +1,2 @@
-## owbot
-Overwatch bot that collects data from Twitch.tv and do stuff #wip
+# OWbot
+## Bot that collect and tweet the top Overwatch streamers from Twitch.tv

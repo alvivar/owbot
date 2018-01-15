@@ -13,6 +13,7 @@ EXECUTABLES = [Executable('owbot.py', targetName='owbot.exe')]
 setup(
     name='owbot',
     version='0.1',
-    description="Bot that tweets and collects the top streamers from Twitch.tv",
+    description=
+    "Bot that collect and tweet the top Overwatch streamers from Twitch.tv",
     executables=EXECUTABLES,
     options=OPTIONS)
