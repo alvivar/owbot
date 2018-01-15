@@ -2,12 +2,17 @@
         TO DO
 
 
-    Avoid repeating the same status
-    Add ad blocker to Chrome driver to avoid detection
-    Top viewers ranking
     Decent read me
+    Top viewers ranking
+    Add ad blocker to Chrome driver to improve detection
+
+    Avoid repeating the same status
     Not all profile tags are detected
 
+
+    2018/01/15 03:35 am
+    x Better file names and daily data directory
+    x Better time input as argument, seconds from (h m s d) after a number
 
     2018/01/14 08:28 pm
     x Tags instead of replies and link to avoid being spam
