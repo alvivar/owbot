@@ -2,9 +2,15 @@
         TO DO
 
 
+    Avoid repeating the same status
+    Add ad blocker to Chrome driver to avoid detection
     Top viewers ranking
     Decent read me
     Not all profile tags are detected
+
+
+    2018/01/14 08:28 pm
+    x Tags instead of replies and link to avoid being spam
 
     2018/01/14 01:58 am
     x Extract handlers from twitter fails with this https://twitter.com/oasisoverwatch/status/798417136083472384
