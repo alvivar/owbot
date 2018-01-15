@@ -23,12 +23,8 @@ HOME = os.path.normpath(  # The script directory + cxfreeze compatibility
         sys.executable if getattr(sys, 'frozen', False) else __file__))
 
 IMAGESPATH = os.path.join(HOME, "images")
-if not os.path.exists(IMAGESPATH):
-    os.makedirs(IMAGESPATH)
 
 DATAPATH = os.path.join(HOME, "data")
-if not os.path.exists(DATAPATH):
-    os.makedirs(DATAPATH)
 
 # Files
 
