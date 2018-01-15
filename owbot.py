@@ -75,18 +75,19 @@ except (IOError, ValueError):
 
 def str2seconds(strtime, default=0):
     """
-        Return the seconds represented in 'strtime'. 'default' will be returned
-        if 'strtime' is malformed.
+        Return the seconds represented in 'strtime' with my own convention.
+        'default' will be returned if 'strtime' is malformed.
 
         e.g
             "1h" -> 3600s
             "2m" -> 120s
             "30s" | "30" -> 30s
-            "30sm" -> None
+            "30sm" -> None (Only one symbol)
             "1d" -> 86400s (1 day)
+            "5x" -> None (x is not a valid symbol)
 
         TODO
-            "2h30m10s" -> 7200s + 1800s + 10
+            "2h30m10" -> 7200s + 1800s + 10
     """
 
     result = default
@@ -265,7 +266,12 @@ if __name__ == "__main__":
 
             imageurl = dirdata['image']
             print(f"Image url: {imageurl}")
-            imagefile = os.path.join(IMAGESPATH, os.path.basename(imageurl))
+
+            imagepath = os.path.join(IMAGESPATH, todaystr())
+            if not os.path.exists(imagepath):
+                os.makedirs(imagepath)
+
+            imagefile = os.path.join(imagepath, os.path.basename(imageurl))
             with urlopen(imageurl) as r, open(imagefile, 'wb') as f:
                 shutil.copyfileobj(r, f)
                 print(f"Downloaded: {imagefile}")
