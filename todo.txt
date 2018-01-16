@@ -2,7 +2,8 @@
         TO DO
 
 
-    Decent read me
+    Create a new accounts, we are on the spam list :(
+    Avoid being spam with the publication behaviour
     Top viewers ranking
     Add ad blocker to Chrome driver to improve detection
 
@@ -11,6 +12,7 @@
 
 
     2018/01/15 04:26 pm
+    x Decent read me
     x Images on daily folders
 
     2018/01/15 03:35 am
