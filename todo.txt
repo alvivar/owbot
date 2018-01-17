@@ -2,6 +2,7 @@
         TO DO
 
 
+    Talk about setup.py on readme
     Create a new accounts, we are on the spam list :(
     Avoid being spam with the publication behaviour
     Top viewers ranking
