@@ -2,16 +2,20 @@
         TO DO
 
 
+    ? Create a new accounts, we are on the spam list :(
+    Improve scrapper format to list of dictionaries
+
     Rename OWbot to owbot everywhere
     Talk about setup.py on readme
-    Create a new accounts, we are on the spam list :(
-    Avoid being spam with the publication behaviour
     Top viewers ranking
     Add ad blocker to Chrome driver to improve detection
-
     Avoid repeating the same status
     Not all profile tags are detected
 
+    2018/01/20 10:26 pm
+    x The current cycle delay is saved on the config
+    x --n -Now starts immediately
+    x Avoid being spam with the publication behaviour
 
     2018/01/15 04:26 pm
     x Decent read me
