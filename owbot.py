@@ -8,6 +8,7 @@ import argparse
 import datetime
 import json
 import os
+import re
 import shutil
 import sys
 import threading
@@ -33,7 +34,7 @@ try:
     with open(CONFIGJSON, 'r') as f:
         CONFIG = json.load(f)
 except (IOError, ValueError):
-    CONFIG = {'timer': 0, 'promoted': {}}
+    CONFIG = {'timer': -1, 'promoted': {}}
     with open(CONFIGJSON, 'w') as f:
         json.dump(CONFIG, f)
 
@@ -69,10 +70,10 @@ except (IOError, ValueError):
     ]
 
 
-def str2seconds(strtime, default=0):
+def str2seconds(strtime):
     """
-        Return the seconds represented in 'strtime' with my own convention.
-        'default' will be returned if 'strtime' is malformed.
+        Return the seconds represented in 'strtime' based on the special
+        convention. 'default' will be returned if 'strtime' is malformed.
 
         e.g
             "1h" -> 3600s
@@ -81,30 +82,74 @@ def str2seconds(strtime, default=0):
             "30sm" -> None (Only one symbol)
             "1d" -> 86400s (1 day)
             "5x" -> None (x is not a valid symbol)
+            "2h30m10" -> 7200s + 1800s + 10
 
         TODO
-            "2h30m10" -> 7200s + 1800s + 10
+            Years
     """
 
-    result = default
+    result = 0
 
-    strtime = strtime.lower()  # Case insensitive
-    strdigits = "".join([i for i in strtime if i.isdigit()])
+    for i in re.split(r"([0-9]+[a-z]+)", strtime):
 
-    if len(strtime) == len(strdigits):  # Without simbol is seconds
-        result = int(strdigits)
-    elif len(strtime) > len(strdigits) + 1:  # Only one symbol allowed
-        result = None
-    elif 'd' in strtime:  # Days
-        result = 86400 * int(strdigits)
-    elif 'h' in strtime:  # Hours
-        result = 3600 * int(strdigits)
-    elif 'm' in strtime:  # Minutes
-        result = 60 * int(strdigits)
-    elif 's' in strtime:  # Seconds
-        result = int(strdigits)
+        stri = i.strip().lower()  # Case insensitive
+        if not stri:
+            continue
+
+        digits = "".join([i for i in stri if i.isdigit()])
+
+        if len(stri) == len(digits):  # Without symbol assume seconds
+            result += int(digits)
+        elif len(stri) > len(digits) + 1:  # Only one symbol number
+            result += 0
+        elif 'd' in stri:  # Days
+            result += 86400 * int(digits)
+        elif 'h' in stri:  # Hours
+            result += 3600 * int(digits)
+        elif 'm' in stri:  # Minutes
+            result += 60 * int(digits)
+        elif 's' in stri:  # Seconds
+            result += int(digits)
 
     return result
+
+
+def seconds2str(seconds):
+    """
+        Return a str representation of 'seconds' based on the special convention.
+
+        e.g
+            100 -> "2m40s"
+            1000 -> "17m40s"
+            10000 -> "3h47m40s"
+            100000 -> "1d3h46m40s"
+
+        TODO
+            Years
+    """
+
+    seconds = abs(seconds)
+    days = hours = minutes = ""
+
+    if seconds >= 86400:
+        days = seconds / 86400
+        seconds = (days - int(days)) * 86400
+
+    if seconds >= 3600:
+        hours = seconds / 3600
+        seconds = (hours - int(hours)) * 3600
+
+    if seconds >= 60:
+        minutes = seconds / 60
+        seconds = (minutes - int(minutes)) * 60
+
+    strtime = ""
+    strtime += f"{int(days)}d" if days else ""
+    strtime += f"{int(hours)}h" if hours else ""
+    strtime += f"{int(minutes)}m" if minutes else ""
+    strtime += f"{round(seconds)}s" if seconds else ""
+
+    return strtime
 
 
 def todaystr():
@@ -177,10 +222,12 @@ if __name__ == "__main__":
 
     # Repeat cycle
 
-    DELAY = str2seconds(ARGS.delay, default=str2seconds("3h"))
-    BAN = str2seconds(ARGS.ban, default=str2seconds("7d"))
+    DELAY = str2seconds(ARGS.delay)
+    BAN = str2seconds(ARGS.ban)
 
     TIMER = CONFIG['timer'] if not ARGS.now else DELAY
+    TIMER = DELAY if TIMER < 0 else TIMER  # First time
+
     COUNT = 0
 
     while REPEAT:
@@ -192,7 +239,8 @@ if __name__ == "__main__":
             print()
 
         while REPEAT and TIMER <= DELAY:
-            sys.stdout.write(f"\r'q' + enter to quit ({DELAY - TIMER}): ")
+            sys.stdout.write(
+                f"\r'q' + enter to quit ({seconds2str(DELAY - TIMER)}): ")
             sys.stdout.flush()
 
             TIMER += 1
