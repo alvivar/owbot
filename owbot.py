@@ -30,16 +30,16 @@ DATAPATH = os.path.join(HOME, "data")
 
 CONFIGJSON = os.path.join(HOME, "config-owbot.json")
 try:
-    with open(CONFIGJSON, "r") as f:
+    with open(CONFIGJSON, 'r') as f:
         CONFIG = json.load(f)
 except (IOError, ValueError):
-    CONFIG = {"promoted": {}}
+    CONFIG = {'timer': 0, 'promoted': {}}
     with open(CONFIGJSON, 'w') as f:
         json.dump(CONFIG, f)
 
 QBOTJSON = os.path.join(HOME, "qbot.json")
 try:
-    QBOT = json.load(open(QBOTJSON, "r"))
+    QBOT = json.load(open(QBOTJSON, 'r'))
 except (IOError, ValueError):
     QBOT = {
         'options': {
@@ -145,6 +145,11 @@ if __name__ == "__main__":
         help="delay between republishing an account again, '7d' days default",
         default="7d",
         type=str)
+    PARSER.add_argument(
+        "-n",
+        "--now",
+        help="starts immediately, ignoring the saved cycle delay",
+        action="store_true")
     ARGS = PARSER.parse_args()
 
     # TODO DANGEROUS code: All new options need to be here or they will be ignored
@@ -175,11 +180,36 @@ if __name__ == "__main__":
     DELAY = str2seconds(ARGS.delay, default=str2seconds("3h"))
     BAN = str2seconds(ARGS.ban, default=str2seconds("7d"))
 
-    WAIT = 0
-    COUNT = 1
+    TIMER = CONFIG['timer'] if not ARGS.now else DELAY
+    COUNT = 0
+
     while REPEAT:
 
-        # Prepare a tweet for the top Twitch.tv streamer
+        # Repeat timer
+
+        REPEAT = False if DELAY <= 0 else REPEAT
+        if REPEAT:
+            print()
+
+        while REPEAT and TIMER <= DELAY:
+            sys.stdout.write(f"\r'q' + enter to quit ({DELAY - TIMER}): ")
+            sys.stdout.flush()
+
+            TIMER += 1
+            CONFIG['timer'] = TIMER
+            time.sleep(1)
+
+        with open(CONFIGJSON, 'w') as f:
+            json.dump(CONFIG, f)
+
+        if REPEAT:
+            TIMER = 0
+            COUNT += 1
+            print(f"\n\n#{COUNT}")
+        else:
+            sys.exit(0)
+
+        # Prepare a tweet of the top Twitch.tv streamer
 
         print("\nScrapping data...")
 
@@ -274,7 +304,7 @@ if __name__ == "__main__":
 
             # Queue tweet in Qbot
 
-            tweet = {'text': f"{status} {tags}", 'image': imagefile}
+            tweet = {'text': f"{status} {url} {tags}", 'image': imagefile}
             QBOT['messages'].append(tweet)
             with open(QBOTJSON, 'w') as f:
                 json.dump(QBOT, f)
@@ -291,23 +321,6 @@ if __name__ == "__main__":
             # Just once
             break
 
-        # Repeat
-
-        REPEAT = False if DELAY <= 0 else REPEAT
-        if REPEAT:
-            print()
-
-        while REPEAT and WAIT < DELAY:
-            sys.stdout.write(f"\r'q' + enter to quit ({DELAY - WAIT}s): ")
-            sys.stdout.flush()
-            WAIT += 1
-            time.sleep(1)
-
-        if REPEAT:
-            WAIT = 0
-            COUNT += 1
-            print(f"\n\n#{COUNT}")
-
     # The end
     print(f"\nDone! ({round(time.time() - DELTA)}s)")
-    time.sleep(2)
+    time.sleep(1)
