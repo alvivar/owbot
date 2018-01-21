@@ -13,6 +13,8 @@
     Not all profile tags are detected
 
     2018/01/20 10:26 pm
+    x str2seconds 1h10s -> 3610
+    x seconds2str 3610 -> 1h10s
     x The current cycle delay is saved on the config
     x --n -Now starts immediately
     x Avoid being spam with the publication behaviour
