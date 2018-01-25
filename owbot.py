@@ -293,6 +293,8 @@ if __name__ == "__main__":
             CONFIG['promoted'][user] = CONFIG['promoted'].get(
                 user, {
                     'count': 0,
+                    'max_viewers': 0,
+                    'min_viewers': 0,
                     'found': time.time(),
                     'last_promo': 0
                 })
@@ -370,6 +372,18 @@ if __name__ == "__main__":
 
             CONFIG['promoted'][user]['count'] += 1
             CONFIG['promoted'][user]['last_promo'] = time.time()
+
+            nowviewers = userdata[user]['viewers']
+
+            maxviewers = CONFIG['promoted'][user]['max_viewers']
+            CONFIG['promoted'][user]['max_viewers'] = max(
+                nowviewers, maxviewers)
+
+            minviewers = CONFIG['promoted'][user]['min_viewers']
+            minviewers = nowviewers if minviewers < 1 else minviewers
+            CONFIG['promoted'][user]['min_viewers'] = min(
+                nowviewers, minviewers)
+
             with open(CONFIGJSON, 'w') as f:
                 json.dump(CONFIG, f)
 
