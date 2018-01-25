@@ -330,11 +330,13 @@ if __name__ == "__main__":
             status = " ".join(status.split())
             status = status if len(status) < 200 else status[:200] + "[...]"
 
-            # Tags from Twitter and Twitch usernames
+            # Viewers
 
-            twitter_accounts = userdata[user]['twitter']
-            tags = uniquelist(twitter_accounts + [user])
-            tags = " ".join([f"#{i}" for i in tags])
+            viewers = f"({userdata[user]['viewers']})"
+
+            # Tags from Twitter accounts
+
+            tags = " ".join([f"#{i}" for i in userdata[user]['twitter']])
 
             # Images
 
@@ -352,7 +354,10 @@ if __name__ == "__main__":
 
             # Queue tweet in Qbot
 
-            tweet = {'text': f"{status} {url} {tags}", 'image': imagefile}
+            tweet = {
+                'text': f"{status} {viewers} {url} {tags}",
+                'image': imagefile
+            }
             QBOT['messages'].append(tweet)
             with open(QBOTJSON, 'w') as f:
                 json.dump(QBOT, f)
