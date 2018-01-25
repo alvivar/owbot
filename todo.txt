@@ -13,6 +13,11 @@
     Create a new accounts, we are on the spam list?
     Avoid repeating the same status?
 
+    2018/01/24 08:31 pm
+    x Tags only from twitter accounts
+    x The twitch url is back
+    x Show viewers on tweet
+
     2018/01/20 10:26 pm
     x str2seconds 1h10s -> 3610
     x seconds2str 3610 -> 1h10s
