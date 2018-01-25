@@ -332,7 +332,7 @@ if __name__ == "__main__":
 
             # Viewers
 
-            viewers = f"({userdata[user]['viewers']})"
+            viewers = f"({userdata[user]['viewers']} viewers)"
 
             # Tags from Twitter accounts
 
