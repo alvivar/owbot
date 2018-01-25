@@ -6,7 +6,8 @@
 
 - **twitchscrapper.py** scraps data from a game directory and a user page
 - **owbot.py** handles the scrap cycle, **#1** the **Overwatch** directory data, **#2** the top streamer data, **#3** queue a tweet about it using **[Qbot](https://github.com/alvivar/qbot)**, then waits before repeating again
-- **[ChomeDriver](https://sites.google.com/a/chromium.org/chromedriver/)** is used through Selenium to obtain the html source because **Twitch.tv** is a javascript app
+- **[ChomeDriver](https://sites.google.com/a/chromium.org/chromedriver/)** is used through Selenium to obtain the html source because **Twitch.tv** is a **JavaScript** app
+- You can use **'python cxfreezesetup.py build'** to create a executable with **cx_Freeze**
 - Check it out! **[@overwatchbest](https://twitter.com/overwatchbest)**
 
 ### More details
