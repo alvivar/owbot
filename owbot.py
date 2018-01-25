@@ -129,7 +129,7 @@ def seconds2str(seconds):
     """
 
     seconds = abs(seconds)
-    days = hours = minutes = ""
+    days = hours = minutes = 0
 
     if seconds >= 86400:
         days = seconds / 86400
@@ -149,7 +149,7 @@ def seconds2str(seconds):
     strtime += f"{int(minutes)}m" if minutes else ""
     strtime += f"{round(seconds)}s" if seconds else ""
 
-    return strtime
+    return strtime if strtime else "0s"
 
 
 def todaystr():
@@ -226,7 +226,8 @@ if __name__ == "__main__":
     BAN = str2seconds(ARGS.ban)
 
     TIMER = CONFIG['timer'] if not ARGS.now else DELAY
-    TIMER = DELAY if TIMER < 0 else TIMER  # First time
+    TIMER = DELAY if TIMER < 0 else TIMER  # First time is -1 by default
+    TIMER = DELAY if TIMER > DELAY else TIMER  # 2nd while below at least once
 
     COUNT = 0
 
@@ -235,12 +236,13 @@ if __name__ == "__main__":
         # Repeat timer
 
         REPEAT = False if DELAY <= 0 else REPEAT
-        if REPEAT:
+        if REPEAT and TIMER <= DELAY:
             print()
 
         while REPEAT and TIMER <= DELAY:
-            sys.stdout.write(
-                f"\r'q' + enter to quit ({seconds2str(DELAY - TIMER)}): ")
+            COUNTDOWN = seconds2str(DELAY - TIMER)
+            COUNTDOWN = f" ({COUNTDOWN}): "
+            sys.stdout.write(f"\r'q' + enter to quit{COUNTDOWN}")
             sys.stdout.flush()
 
             TIMER += 1
