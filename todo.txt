@@ -2,6 +2,7 @@
         TO DO
 
 
+    Compare tags from twitter name with twitch name to approve as tag
     Sync timer with last time running to add the offline time
     Top viewers on config
     Improve scrapper format to list of dictionaries
