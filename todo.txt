@@ -2,10 +2,10 @@
         TO DO
 
 
+    Save median viewers on config
     When 'clicking doesn't work' ignore the cycle and try again later
-    Compare tags from twitter name with twitch name to approve as tag
-    Sync timer with last time running to add the offline time
-    Top viewers on config
+    Compare tags similarity from twitter name with twitch name to approve it
+    Sync timer with last time running to add the offline time?
     Improve scrapper format to list of dictionaries
     Rename OWbot to owbot everywhere
     Talk about setup.py on readme
@@ -16,6 +16,8 @@
     Avoid repeating the same status?
 
     2018/01/24 08:31 pm
+    x Top viewers on config
+    x Min viewers on config
     x Tags only from twitter accounts
     x The twitch url is back
     x Show viewers on tweet
