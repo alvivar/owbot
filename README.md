@@ -1,4 +1,4 @@
-# OWbot
+# owbot
 
 ## Bot that collects and tweets the top Overwatch streamers from Twitch.tv
 
@@ -13,8 +13,8 @@
 ### More details
 
 ```
-OWbot v0.1
-usage: owbot.exe [-h] [-s] [-d DELAY] [-b BAN] [-n]
+owbot v0.1
+usage: owbot.py [-h] [-s] [-d DELAY] [-b BAN] [-n]
 
 Bot that collects and tweets the top Overwatch streamers from Twitch.tv
 

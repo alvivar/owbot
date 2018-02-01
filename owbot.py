@@ -165,7 +165,7 @@ def todaystr():
 if __name__ == "__main__":
 
     DELTA = time.time()
-    print("OWbot v0.1")
+    print("owbot v0.1")
 
     # Command line args
 
