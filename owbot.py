@@ -15,7 +15,7 @@ import threading
 import time
 from urllib.request import urlopen
 
-from twitchscrapper import get_directory_data, get_user_data, uniquelist
+from twitchscrapper import get_directory_data, get_user_data
 
 # Paths
 
@@ -266,11 +266,12 @@ if __name__ == "__main__":
         DIRURL = "https://www.twitch.tv/directory/game/Overwatch"
         DIRECTORY = get_directory_data(
             DIRURL, language="en", increase_image=200)
-        print(f"Scrapped: {DIRURL}")
 
-        if not DIRECTORY:
-            input(f"\nError scraping: {DIRURL}")
-            sys.exit(1)
+        if DIRECTORY:
+            print(f"Scrapped: {DIRURL}")
+        else:
+            print(f"Error scraping: {DIRURL}")
+            continue
 
         # Dump directory
 
