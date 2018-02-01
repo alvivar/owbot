@@ -141,7 +141,7 @@ def get_directory_data(url, language="en", increase_image=0):
         Return a dictionary with the data for each stream in a Twitch.tv game
         directory page like https://www.twitch.tv/directory/game/Overwatch
 
-        'increase_image' will force the hardcoded image to increase by the size.
+        'increase_image' will force the hardcoded image to increase that size.
     """
 
     htmlsource = get_twitch_html(url, language=language)
