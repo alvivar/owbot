@@ -296,6 +296,7 @@ if __name__ == "__main__":
                     'count': 0,
                     'max_viewers': 0,
                     'min_viewers': 0,
+                    'mean_viewers': 0,
                     'found': time.time(),
                     'last_promo': 0
                 })
@@ -374,6 +375,8 @@ if __name__ == "__main__":
             CONFIG['promoted'][user]['count'] += 1
             CONFIG['promoted'][user]['last_promo'] = time.time()
 
+            # Viewers
+
             nowviewers = userdata[user]['viewers']
 
             maxviewers = CONFIG['promoted'][user]['max_viewers']
@@ -385,10 +388,15 @@ if __name__ == "__main__":
             CONFIG['promoted'][user]['min_viewers'] = min(
                 nowviewers, minviewers)
 
+            meanviewers = CONFIG['promoted'][user]['mean_viewers']
+            meanviewers = nowviewers if meanviewers < 1 else meanviewers
+            meanviewers = (meanviewers + nowviewers) / 2
+            CONFIG['promoted'][user]['mean_viewers'] = meanviewers
+
             with open(CONFIGJSON, 'w') as f:
                 json.dump(CONFIG, f)
 
-            # Just once
+            # Just the current top player
             break
 
     # The end
