@@ -2,8 +2,6 @@
         TO DO
 
 
-    Compare tags similarity from twitter name with twitch name to approve it
-
     Sync timer with last time running to add the offline time?
     Improve scrapper format to list of dictionaries
     Talk about setup.py on readme
@@ -15,6 +13,7 @@
 
 
     2018/02/01 05:28 pm
+    x Compare tags similarity from twitter name with twitch name to approve it
     x Save mean viewers on config
     x Rename OWbot to owbot everywhere
     x When 'clicking doesn't work' ignore the cycle and try again later
