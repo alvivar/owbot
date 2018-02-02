@@ -341,12 +341,17 @@ if __name__ == "__main__":
 
             viewers = f"({userdata[user]['viewers']} viewers)"
 
-            # Tags from Twitter accounts kind of similar to the user name
+            # Tags from twitter accounts, if more than one only those kind of
+            # similar to the user name
 
-            tags = " ".join([
-                f"#{i}" for i in userdata[user]['twitter']
-                if SequenceMatcher(None, i, user).ratio() > 0.5
-            ])
+            twitters = userdata[user]['twitter']
+            if len(twitters) > 1:
+                twitters = [
+                    i for i in twitters
+                    if SequenceMatcher(None, i, user).ratio() > 0.4
+                ]
+
+            tags = " ".join([f"#{i}" for i in twitters])
 
             # Images
 
@@ -365,7 +370,7 @@ if __name__ == "__main__":
             # Queue tweet in Qbot
 
             tweet = {
-                'text': f"{status} {viewers} {url} {tags}",
+                'text': f"{status} {viewers} {url} {tags}".strip(),
                 'image': imagefile
             }
             QBOT['messages'].append(tweet)
