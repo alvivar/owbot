@@ -13,6 +13,7 @@ import shutil
 import sys
 import threading
 import time
+from difflib import SequenceMatcher
 from urllib.request import urlopen
 
 from twitchscrapper import get_directory_data, get_user_data
@@ -340,9 +341,12 @@ if __name__ == "__main__":
 
             viewers = f"({userdata[user]['viewers']} viewers)"
 
-            # Tags from Twitter accounts
+            # Tags from Twitter accounts kind of similar to the user name
 
-            tags = " ".join([f"#{i}" for i in userdata[user]['twitter']])
+            tags = " ".join([
+                f"#{i}" for i in userdata[user]['twitter']
+                if SequenceMatcher(None, i, user).ratio() > 0.5
+            ])
 
             # Images
 
@@ -391,7 +395,7 @@ if __name__ == "__main__":
             meanviewers = CONFIG['promoted'][user]['mean_viewers']
             meanviewers = nowviewers if meanviewers < 1 else meanviewers
             meanviewers = (meanviewers + nowviewers) / 2
-            CONFIG['promoted'][user]['mean_viewers'] = meanviewers
+            CONFIG['promoted'][user]['mean_viewers'] = round(meanviewers)
 
             with open(CONFIGJSON, 'w') as f:
                 json.dump(CONFIG, f)
