@@ -190,8 +190,8 @@ if __name__ == "__main__":
         "-b",
         "--ban",
         help=
-        "wait time between republishing an account again, '7d' days default",
-        default="7d",
+        "wait time between republishing an account again, '3d' days default",
+        default="3d",
         type=str)
     PARSER.add_argument(
         "-n",

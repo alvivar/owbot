@@ -25,7 +25,7 @@ optional arguments:
   -r REPEAT, --repeat REPEAT
                         wait time between complete cycles, '1h' hours default,
                         0 or less to avoid repeating
-  -b BAN, --ban BAN     wait time between republishing an account again, '7d'
+  -b BAN, --ban BAN     wait time between republishing an account again, '3d'
                         days default
   -n, --now             starts immediately, ignoring the saved cycle delay
 ```
