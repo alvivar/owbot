@@ -14,7 +14,7 @@
 
 ```
 owbot v0.1
-usage: owbot.py [-h] [-s] [-d DELAY] [-b BAN] [-n]
+usage: owbot.py [-h] [-s] [-r REPEAT] [-b BAN] [-n]
 
 Bot that collects and tweets the top Overwatch streamers from Twitch.tv
 
@@ -22,9 +22,10 @@ optional arguments:
   -h, --help            show this help message and exit
   -s, --start           start the cycle, find the top streamer and queue it in
                         Qbot
-  -d DELAY, --delay DELAY
-                        delay between complete cycles, '3h' hours default
-  -b BAN, --ban BAN     delay between republishing an account again, '7d' days
-                        default
+  -r REPEAT, --repeat REPEAT
+                        wait time between complete cycles, '1h' hours default,
+                        0 or less to avoid repeating
+  -b BAN, --ban BAN     wait time between republishing an account again, '7d'
+                        days default
   -n, --now             starts immediately, ignoring the saved cycle delay
 ```
