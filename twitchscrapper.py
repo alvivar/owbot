@@ -146,6 +146,7 @@ def get_directory_data(url, language="en", increase_image=0):
 
     htmlsource = get_twitch_html(url, language=language)
     if not htmlsource:
+        print(f"Error with get_directory_data({url})")
         return False
 
     soup = BeautifulSoup(htmlsource, 'html.parser')
@@ -193,6 +194,7 @@ def get_user_data(url):
 
     htmlsource = get_twitch_html(url, closechat=True)
     if not htmlsource:
+        print(f"Error with get_user_data({url})")
         return False
 
     soup = BeautifulSoup(htmlsource, 'html.parser')
