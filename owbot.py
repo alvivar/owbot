@@ -180,8 +180,8 @@ if __name__ == "__main__":
         help="start the cycle, find the top streamer and queue it in Qbot",
         action="store_true")
     PARSER.add_argument(
-        "-r",
-        "--repeat",
+        "-w",
+        "--wait",
         help=
         "wait time between complete cycles, '1h' hours default, 0 or less to avoid repeating",
         default="1h",
@@ -190,8 +190,8 @@ if __name__ == "__main__":
         "-b",
         "--ban",
         help=
-        "wait time between republishing an account again, '3d' days default",
-        default="3d",
+        "wait time between republishing an account again, '7d' days default",
+        default="7d",
         type=str)
     PARSER.add_argument(
         "-n",
@@ -225,7 +225,7 @@ if __name__ == "__main__":
 
     # Repeat cycle
 
-    DELAY = str2seconds(ARGS.repeat)
+    DELAY = str2seconds(ARGS.wait)
     BAN = str2seconds(ARGS.ban)
 
     TIMER = CONFIG['timer'] if not ARGS.now else DELAY
