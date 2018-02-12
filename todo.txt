@@ -2,6 +2,8 @@
         TO DO
 
 
+    There must be a ranking from all the collected data
+
     Sync timer with last time running to add the offline time?
     Improve scrapper format to list of dictionaries
     Talk about setup.py on readme
