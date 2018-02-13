@@ -2,6 +2,7 @@
         TO DO
 
 
+    -s to start when it's run without -s
     There must be a ranking from all the collected data
 
     Sync timer with last time running to add the offline time?
