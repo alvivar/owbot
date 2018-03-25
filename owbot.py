@@ -202,6 +202,7 @@ if __name__ == "__main__":
 
     # TODO DANGEROUS code: All new options need to be here or they will be ignored
     if not ARGS.start:
+        print('try -h for help')
         PARSER.print_usage()
         PARSER.exit()
 
@@ -267,13 +268,13 @@ if __name__ == "__main__":
         print("\nScrapping data...")
 
         DIRURL = "https://www.twitch.tv/directory/game/Overwatch"
-        DIRECTORY = get_directory_data(
-            DIRURL, language="en", increase_image=200)
-
-        if DIRECTORY:
+        try:
+            DIRECTORY = get_directory_data(
+                DIRURL, language="en", increase_image=200)
             print(f"Scrapped: {DIRURL}")
-        else:
-            print(f"Error scraping: {DIRURL}")
+        except Exception as e:
+            print(f"Error scraping: {DIRURL}\n{e}".strip())
+            TIMER = DELAY - 30
             continue
 
         # Dump directory
@@ -312,12 +313,12 @@ if __name__ == "__main__":
             # Data
 
             url = f"https://www.twitch.tv/{user}"
-            userdata = get_user_data(url)
-            print(f"Scrapped: {url}")
-
-            if not userdata:
-                input(f"\nError scraping: {url}")
-                sys.exit(1)
+            try:
+                userdata = get_user_data(url)
+                print(f"Scrapped: {url}")
+            except Exception as e:
+                input(f"\nError scraping: {url}\n{e}")
+                continue
 
             # Dump user
 
@@ -407,7 +408,7 @@ if __name__ == "__main__":
             with open(CONFIGJSON, 'w') as f:
                 json.dump(CONFIG, f)
 
-            # Just the current top player
+            # Just one, the current top player
             break
 
     # The end
