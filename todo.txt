@@ -2,18 +2,18 @@
         TO DO
 
 
-    -s to start when it's run without -s
     There must be a ranking from all the collected data
-
     Sync timer with last time running to add the offline time?
     Improve scrapper format to list of dictionaries
-    Talk about setup.py on readme
     Not all profile tags are detected
-
     Add ad blocker to Chrome driver to improve detection
-    Create a new accounts, we are on the spam list?
-    Avoid repeating the same status?
 
+
+    2018/03/25 12:05 am
+    x cx_Freeze deprecated
+    x -s to start when it's run without -s
+    x Exceptions on scrapping handled correctly (retry)
+    x Talk about setup.py on readme
 
     2018/02/01 05:28 pm
     x Compare tags similarity from twitter name with twitch name to approve it
