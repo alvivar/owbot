@@ -1,6 +1,8 @@
 /__pycache__
+/build
+/dist
 /images
 /data
-/build
 qbot.json
 config*json
+*.spec
