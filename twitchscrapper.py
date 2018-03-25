@@ -127,7 +127,7 @@ def increase_image_resolution(url, sizeinc=200):
         https://live_user_overwatchleague-320x180.jpg ->
         https://live_user_overwatchleague-520x380.jpg
     """
-    resolution = re.split("-|\.", url)[-2]
+    resolution = re.split(r"-|\.", url)[-2]
 
     w, h = resolution.split('x')
     w = int(w) + sizeinc
