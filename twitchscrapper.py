@@ -212,9 +212,7 @@ def get_user_data(url):
         viewers = soup.find('div', {
             'class': 'tw-stat',
             'data-a-target': 'channel-viewers-count'
-        }).find('span', {
-            'data-a-target': 'tw-stat-value'
-        })
+        }).find('span', {'data-a-target': 'tw-stat-value'})
         viewers = viewers.text if viewers else False
         viewers = "".join([c for c in viewers if c.isdigit()])
     except AttributeError:
@@ -224,9 +222,7 @@ def get_user_data(url):
         total_views = soup.find('div', {
             'class': 'tw-stat',
             'data-a-target': 'total-views-count'
-        }).find('span', {
-            'data-a-target': 'tw-stat-value'
-        })
+        }).find('span', {'data-a-target': 'tw-stat-value'})
         total_views = total_views.text if total_views else False
         total_views = "".join([c for c in total_views if c.isdigit()])
     except AttributeError:
