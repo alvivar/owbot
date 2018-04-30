@@ -245,7 +245,7 @@ if __name__ == "__main__":
 
         while REPEAT and TIMER <= DELAY:
             COUNTDOWN = seconds2str(DELAY - TIMER)
-            COUNTDOWN = f" ({COUNTDOWN}): "
+            COUNTDOWN = f" ({COUNTDOWN})... "
             sys.stdout.write(f"\r'q' + enter to quit{COUNTDOWN}")
             sys.stdout.flush()
 
@@ -317,7 +317,7 @@ if __name__ == "__main__":
                 userdata = get_user_data(url)
                 print(f"Scrapped: {url}")
             except Exception as e:
-                input(f"\nError scraping: {url}\n{e}")
+                print(f"\nError scraping: {url}\n{e}")
                 continue
 
             # Dump user
@@ -336,7 +336,23 @@ if __name__ == "__main__":
 
             print("\nExtracting data...\n")
 
-            status = userdata[user]['status'].replace('@', '')  # No replies
+            try:
+                status = userdata[user]['status']
+            except Exception as e:
+                now = round(time.time())
+                error_data = os.path.join(DATAPATH, f'error.{now}.json')
+                error_name = os.path.join(DATAPATH, f'error.{now}.txt')
+
+                error = f"\nError:\n{e}"
+                print(error)
+                with open(error_data, 'w') as f:
+                    json.dump(userdata, f)
+                with open(error_name, 'w') as f:
+                    f.write(error)
+
+                continue
+
+            status = status.replace('@', '')
             status = " ".join(status.split())
             status = status if len(status) < 200 else status[:200] + "[...]"
 
