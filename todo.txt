@@ -9,7 +9,7 @@
     Add ad blocker to Chrome driver to improve detection
 
     2018/05/07 11:00 pm
-    x Status attribute exception
+    x Status exceptions
 
     2018/03/25 12:05 am
     x cx_Freeze deprecated
