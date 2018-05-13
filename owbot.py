@@ -313,11 +313,11 @@ if __name__ == "__main__":
             # Data
 
             url = f"https://www.twitch.tv/{user}"
-            try:
-                userdata = get_user_data(url)
+            userdata = get_user_data(url)
+            if userdata:
                 print(f"Scrapped: {url}")
-            except Exception as e:
-                print(f"\nError scraping: {url}\n{e}")
+            else:
+                print(f"Error scrapping: {url}")
                 continue
 
             # Dump user
