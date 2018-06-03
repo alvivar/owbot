@@ -150,7 +150,7 @@ def get_directory_data(url, language="en", increase_image=0):
         return False
 
     soup = BeautifulSoup(htmlsource, 'html.parser')
-    data = {}
+    data = []
 
     try:
         for html in soup.find_all('div', 'stream-thumbnail'):
@@ -160,28 +160,22 @@ def get_directory_data(url, language="en", increase_image=0):
             if increase_image:
                 image = increase_image_resolution(image, increase_image)
 
-            status = html.find(
-                'h3', class_='live-channel-card__title', title=True)
+            status = html.find('h3', class_='tw-ellipsis', title=True)
             status = status['title'] if status else False
 
-            viewers = html.find('span', class_='tw-ellipsis')
-            viewers = viewers.text.split(' ')[0] if viewers else False
-
-            user = html.find(
-                'a', class_='live-channel-card__videos', href=True)
+            user = html.find('a', class_='tw-link', href=True)
             user = user['href'].replace(
                 '/', ' ').strip().split(' ')[0] if user else False
 
-            data[user] = {
+            data.append({
+                'user': user,
                 'image': image,
                 'status': status,
-                'viewers': viewers,
                 'time': time.time()
-            }
-    except AttributeError:
-        print(
-            f"AttributeError: get_directory_data({url}, language='{language}')"
-        )
+            })
+
+    except AttributeError as e:
+        print(f"Error with get_directory_data:\n{e}".strip())
 
     return data
 
@@ -277,7 +271,8 @@ def get_user_data(url):
     except AttributeError:
         tags = []
 
-    data[user] = {
+    data = {
+        'user': user,
         'status': status,
         'twitter': twitter,
         'instagram': instagram,
@@ -317,6 +312,6 @@ if __name__ == "__main__":
                 increase_image=200), f)
 
     with open(os.path.join(HOME, "sample-user.json"), "w") as f:
-        json.dump(get_user_data("https://www.twitch.tv/aimbotcalvin"), f)
+        json.dump(get_user_data("https://www.twitch.tv/xqcow"), f)
 
     print(f"\nDone! ({round(time.time() - DELTA)}s)")
