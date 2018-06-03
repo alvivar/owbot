@@ -1,8 +1,9 @@
+*.spec
 /__pycache__
 /build
+/data
 /dist
 /images
-/data
-qbot.json
+chromedriver.exe
 config*json
-*.spec
+qbot.json
