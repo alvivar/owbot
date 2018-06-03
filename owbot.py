@@ -283,14 +283,17 @@ if __name__ == "__main__":
         if not os.path.exists(DIRPATH):
             os.makedirs(DIRPATH)
 
-        with open(
-                os.path.join(DIRPATH, f"directory.{round(time.time())}.json"),
-                'w') as f:
+        DUMP_DIR = os.path.join(DIRPATH,
+                                f"directory.{round(time.time())}.json")
+        with open(DUMP_DIR, 'w') as f:
             json.dump(DIRECTORY, f)
 
         # Top Overwatch Twitch streamer
 
-        for user, dirdata in DIRECTORY.items():
+        for entry in DIRECTORY:
+
+            user = entry['user']
+            user_image = entry['image']
 
             # Registry setup
 
@@ -318,6 +321,8 @@ if __name__ == "__main__":
                 print(f"Scrapped: {url}")
             else:
                 print(f"Error scrapping: {url}")
+
+                TIMER = DELAY - 30
                 continue
 
             # Dump user
@@ -326,10 +331,9 @@ if __name__ == "__main__":
             if not os.path.exists(USERPATH):
                 os.makedirs(USERPATH)
 
-            with open(
-                    os.path.join(USERPATH,
-                                 f"{user}.{round(time.time())}.json"),
-                    'w') as f:
+            DUMP_USER = os.path.join(USERPATH,
+                                     f"{user}.{round(time.time())}.json")
+            with open(DUMP_USER, 'w') as f:
                 json.dump(userdata, f)
 
             # Data
@@ -337,7 +341,7 @@ if __name__ == "__main__":
             print("\nExtracting data...\n")
 
             try:
-                status = userdata[user]['status']
+                status = userdata['status']
             except Exception as e:
                 now = round(time.time())
                 error_data = os.path.join(DATAPATH, f'error.{now}.json')
@@ -350,6 +354,7 @@ if __name__ == "__main__":
                 with open(error_name, 'w') as f:
                     f.write(error)
 
+                TIMER = DELAY - 30
                 continue
 
             try:
@@ -369,16 +374,17 @@ if __name__ == "__main__":
                 with open(error_name, 'w') as f:
                     f.write(error)
 
+                TIMER = DELAY - 30
                 continue
 
             # Viewers
 
-            viewers = f"({userdata[user]['viewers']} viewers)"
+            viewers = f"({userdata['viewers']} viewers)"
 
             # Tags from twitter accounts, if more than one only those kind of
             # similar to the user name
 
-            twitters = userdata[user]['twitter']
+            twitters = userdata['twitter']
             if len(twitters) > 1:
                 twitters = [
                     i for i in twitters
@@ -389,7 +395,7 @@ if __name__ == "__main__":
 
             # Images
 
-            imageurl = dirdata['image']
+            imageurl = user_image
             print(f"Image url: {imageurl}")
 
             imagepath = os.path.join(IMAGESPATH, todaystr())
@@ -420,7 +426,7 @@ if __name__ == "__main__":
 
             # Viewers
 
-            nowviewers = userdata[user]['viewers']
+            nowviewers = userdata['viewers']
 
             maxviewers = CONFIG['promoted'][user]['max_viewers']
             CONFIG['promoted'][user]['max_viewers'] = max(

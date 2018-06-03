@@ -2,11 +2,16 @@
         TO DO
 
 
+    Change config format, so it can be sorted
     There must be a ranking from all the collected data
     Sync timer with last time running to add the offline time?
-    Improve scrapper format to list of dictionaries
     Not all profile tags are detected
     Add ad blocker to Chrome driver to improve detection
+
+
+    2018/06/03 01:11 pm
+    x Updated to latest twitch directory changes
+    x Improved scrapper format to list of dictionaries
 
     2018/05/07 11:00 pm
     x Status exceptions
