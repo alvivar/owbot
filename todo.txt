@@ -2,6 +2,7 @@
         TO DO
 
 
+    Fornite!
     Change config format, so it can be sorted
     There must be a ranking from all the collected data
     Sync timer with last time running to add the offline time?
